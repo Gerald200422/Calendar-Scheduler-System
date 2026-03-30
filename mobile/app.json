@@ -35,7 +35,7 @@
           "icon": "./assets/icon.png",
           "color": "#ffffff",
           "sounds": [
-            "./assets/sounds/samsung_alert.mp3",
+            "./assets/sounds/samsung_ringtone.mp3",
             "./assets/sounds/crystal_chime.mp3",
             "./assets/sounds/classic_bell.mp3",
             "./assets/sounds/modern_synth.mp3"

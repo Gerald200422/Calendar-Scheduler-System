@@ -10,7 +10,7 @@ interface SettingsProps {
 
 export default function Settings({ userId }: SettingsProps) {
   const [notificationType, setNotificationType] = useState('both')
-  const [ringtone, setRingtone] = useState('samsung_alert.mp3')
+  const [ringtone, setRingtone] = useState('samsung_ringtone.mp3')
   const [email, setEmail] = useState('')
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(true)
@@ -108,7 +108,7 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   const ringtones = [
-    { id: 'samsung_alert.mp3', name: 'Samsung Alert', url: '/sounds/samsung_alert.mp3' },
+    { id: 'samsung_ringtone.mp3', name: 'Samsung Alert', url: '/sounds/samsung_ringtone.mp3' },
     { id: 'crystal_chime.mp3', name: 'Crystal Chime', url: '/sounds/crystal_chime.mp3' },
     { id: 'classic_bell.mp3', name: 'Classic Bell', url: '/sounds/classic_bell.mp3' },
     { id: 'modern_synth.mp3', name: 'Modern Synth', url: '/sounds/modern_synth.mp3' },

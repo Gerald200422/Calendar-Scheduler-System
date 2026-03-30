@@ -106,13 +106,13 @@ async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === 'android') {
-    // 1. Samsung Channel (v3 to force refresh)
-    await Notifications.setNotificationChannelAsync('v3-samsung_alert', {
+    // 1. Samsung Channel (v4 to force refresh)
+    await Notifications.setNotificationChannelAsync('v4-samsung_ringtone', {
       name: 'Samsung Alert',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
-      sound: 'samsung_alert',
+      sound: 'samsung_ringtone',
     });
 
     // 2. Crystal Channel
