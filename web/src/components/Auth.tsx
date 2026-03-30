@@ -34,6 +34,9 @@ export default function Auth() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh]">
       <div className="w-full max-w-md p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl">
+        <div className="flex justify-center mb-6">
+          <img src="/logo.png" alt="Logo" className="w-16 h-16 rounded-2xl shadow-xl ring-2 ring-white/10" />
+        </div>
         <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
           {isSignUp ? 'Create Account' : 'Welcome Back'}
         </h2>

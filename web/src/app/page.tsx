@@ -67,6 +67,9 @@ export default function Home() {
           <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-violet-500/10 blur-[120px] rounded-full" />
         </div>
         <div className="z-10 w-full max-w-4xl">
+          <div className="flex justify-center mb-6">
+            <img src="/logo.png" alt="Logo" className="w-24 h-24 rounded-[2rem] shadow-2xl ring-4 ring-pink-500/20" />
+          </div>
           <div className="text-center mb-12">
             <h1 className="text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">
               Scheduler Pro
@@ -90,8 +93,8 @@ export default function Home() {
       <div className="z-10 max-w-6xl w-full flex flex-col space-y-12">
         <header className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-pink-500 to-violet-500 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/20 cursor-pointer" onClick={() => setActiveTab('calendar')}>
-              <span className="text-white font-bold text-xl">S</span>
+            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center shadow-lg cursor-pointer overflow-hidden border border-white/10" onClick={() => setActiveTab('calendar')}>
+              <img src="/logo.png" alt="S" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-500">
               Scheduler Pro
