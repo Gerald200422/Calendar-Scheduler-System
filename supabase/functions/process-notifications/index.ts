@@ -155,7 +155,7 @@ serve(async (req: Request) => {
             if (webSubscriptions.length > 0) {
               const VAPID_PUBLIC = Deno.env.get('VAPID_PUBLIC_KEY') || 'BK-ZiqbWSyfXp4VAHzQ5RJeBsZ0TABjvsiK-hLBzMv8xZicbVRk5fHG5Z1fzfK9oJsAxixiRLelmbV8bXbyNGnk'
               const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY') || 'g-uviKcDRN0LEUfdaulzTZ5EAvk3qGV5m4jqZZm_0_U'
-              const ringtone = profile?.ringtone_choice || 'alert1.wav'
+              const ringtone = profile?.ringtone_choice || 'alert1.mp3'
 
               // We'll use a dynamic import for web-push to handle ESM in Deno
               // @ts-ignore

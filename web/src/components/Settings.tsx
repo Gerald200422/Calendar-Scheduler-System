@@ -10,7 +10,7 @@ interface SettingsProps {
 
 export default function Settings({ userId }: SettingsProps) {
   const [notificationType, setNotificationType] = useState('both')
-  const [ringtone, setRingtone] = useState('alert1.wav')
+  const [ringtone, setRingtone] = useState('alert1.mp3')
   const [email, setEmail] = useState('')
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(true)
@@ -26,9 +26,10 @@ export default function Settings({ userId }: SettingsProps) {
     // 1. Immediate Vibration (Tactile feedback)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       let pattern = [200, 100, 200]
-      if (rt.id === 'alert2.wav') pattern = [100, 50, 100, 50, 100, 50, 100]
-      else if (rt.id === 'classic.wav') pattern = [500, 110, 500, 110, 500]
-      else if (rt.id === 'modern.wav') pattern = [100, 100, 100, 100, 100, 100, 500]
+      if (rt.id === 'alert2.mp3') pattern = [100, 50, 100, 50, 100, 50, 100]
+      else if (rt.id === 'classic.mp3') pattern = [500, 110, 500, 110, 500]
+      else if (rt.id === 'modern.mp3') pattern = [100, 100, 100, 100, 100, 100, 500]
+      
       navigator.vibrate(pattern)
     }
 
@@ -107,10 +108,10 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   const ringtones = [
-    { id: 'alert1.wav', name: 'Standard Alert', url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_783cd3a30c.mp3' },
-    { id: 'alert2.wav', name: 'Crystal Chime', url: 'https://cdn.pixabay.com/audio/2021/08/04/audio_062141506b.mp3' },
-    { id: 'classic.wav', name: 'Classic Bell', url: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c030383182.mp3' },
-    { id: 'modern.wav', name: 'Modern Synth', url: 'https://cdn.pixabay.com/audio/2024/02/08/audio_82c612347d.mp3' },
+    { id: 'alert1.mp3', name: 'Standard Alert', url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_783cd3a30c.mp3' },
+    { id: 'alert2.mp3', name: 'Crystal Chime', url: 'https://cdn.pixabay.com/audio/2021/08/04/audio_062141506b.mp3' },
+    { id: 'classic.mp3', name: 'Classic Bell', url: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c030383182.mp3' },
+    { id: 'modern.mp3', name: 'Modern Synth', url: 'https://cdn.pixabay.com/audio/2024/02/08/audio_82c612347d.mp3' },
   ]
 
   if (loading) {

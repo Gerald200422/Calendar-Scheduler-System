@@ -102,35 +102,39 @@ async function registerForPushNotificationsAsync() {
 
   if (Platform.OS === 'android') {
     // 1. Standard Channel
-    await Notifications.setNotificationChannelAsync('alert1.wav', {
+    await Notifications.setNotificationChannelAsync('alert1.mp3', {
       name: 'Standard Alert',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
+      sound: 'alert1.mp3',
     });
 
     // 2. Crystal Channel
-    await Notifications.setNotificationChannelAsync('alert2.wav', {
+    await Notifications.setNotificationChannelAsync('alert2.mp3', {
       name: 'Crystal Chime',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 50, 100],
       lightColor: '#00FFFF',
+      sound: 'alert2.mp3',
     });
 
     // 3. Classic Channel
-    await Notifications.setNotificationChannelAsync('classic.wav', {
+    await Notifications.setNotificationChannelAsync('classic.mp3', {
       name: 'Classic Bell',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 500, 100, 500],
       lightColor: '#FFD700',
+      sound: 'classic.mp3',
     });
 
     // 4. Modern Channel
-    await Notifications.setNotificationChannelAsync('modern.wav', {
+    await Notifications.setNotificationChannelAsync('modern.mp3', {
       name: 'Modern Synth',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 100, 100, 100, 100, 500],
       lightColor: '#FF00FF',
+      sound: 'modern.mp3',
     });
   }
 
