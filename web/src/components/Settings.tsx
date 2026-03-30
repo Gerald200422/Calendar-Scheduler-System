@@ -17,22 +17,45 @@ export default function Settings({ userId }: SettingsProps) {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [playingId, setPlayingId] = useState<string | null>(null)
+  const [loadingId, setLoadingId] = useState<string | null>(null)
 
-  const playPreview = (rt: any) => {
-    // 1. Audio Preview
-    setPlayingId(rt.id)
-    const audio = new Audio(rt.url)
-    audio.play().catch(e => console.warn('Audio play failed:', e))
-    audio.onended = () => setPlayingId(null)
+  const playPreview = async (rt: any) => {
+    setLoadingId(rt.id)
+    setMessage('')
 
-    // 2. Vibration Preview (for Mobile/PWA)
+    // 1. Immediate Vibration (Tactile feedback)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       let pattern = [200, 100, 200]
       if (rt.id === 'alert2.wav') pattern = [100, 50, 100, 50, 100, 50, 100]
       else if (rt.id === 'classic.wav') pattern = [500, 110, 500, 110, 500]
       else if (rt.id === 'modern.wav') pattern = [100, 100, 100, 100, 100, 100, 500]
-      
       navigator.vibrate(pattern)
+    }
+
+    // 2. Audio Preview with Promise Handling
+    try {
+      const audio = new Audio(rt.url)
+      audio.crossOrigin = "anonymous" // Prevent CORS issues
+      
+      const playPromise = audio.play()
+      
+      if (playPromise !== undefined) {
+        setPlayingId(rt.id)
+        setLoadingId(null)
+        
+        await playPromise
+        audio.onended = () => setPlayingId(null)
+      }
+    } catch (err: any) {
+      console.error('Playback blocked or failed:', err)
+      setPlayingId(null)
+      setLoadingId(null)
+      
+      if (err.name === 'NotAllowedError') {
+        setMessage('Audio blocked. Tap again or check Silent Switch.')
+      } else {
+        setMessage('Could not load audio sample.')
+      }
     }
   }
 
@@ -195,13 +218,21 @@ export default function Settings({ userId }: SettingsProps) {
                     e.stopPropagation()
                     playPreview(rt)
                   }}
+                  disabled={loadingId === rt.id}
                   className={`absolute right-12 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white/5 hover:bg-violet-500/20 text-zinc-400 hover:text-white transition-all ${playingId === rt.id ? 'text-violet-400 bg-violet-500/10' : ''}`}
                 >
-                  <Volume2 size={16} className={playingId === rt.id ? 'animate-pulse' : ''} />
+                  {loadingId === rt.id ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Volume2 size={16} className={playingId === rt.id ? 'animate-pulse' : ''} />
+                  )}
                 </button>
               </div>
             ))}
           </div>
+          <p className="mt-4 text-[10px] text-zinc-600 font-medium italic">
+            Tip: If on iPhone, ensure your physical <span className="text-zinc-500 font-bold">Silent Switch</span> is turned OFF to hear previews.
+          </p>
         </section>
 
         {/* Save/Status */}
