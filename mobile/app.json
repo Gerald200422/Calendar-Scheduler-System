@@ -32,11 +32,13 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/notification-icon.png",
+          "icon": "./assets/icon.png",
           "color": "#ffffff",
           "sounds": [
-            "./assets/sounds/alert1.wav",
-            "./assets/sounds/alert2.wav"
+            "./assets/sounds/alert1.mp3",
+            "./assets/sounds/alert2.mp3",
+            "./assets/sounds/classic.mp3",
+            "./assets/sounds/modern.mp3"
           ]
         }
       ]

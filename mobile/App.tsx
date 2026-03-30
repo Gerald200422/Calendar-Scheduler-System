@@ -112,7 +112,7 @@ async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
-      sound: 'alert1.mp3',
+      sound: 'alert1',
     });
 
     // 2. Crystal Channel
@@ -121,7 +121,7 @@ async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 50, 100],
       lightColor: '#00FFFF',
-      sound: 'alert2.mp3',
+      sound: 'alert2',
     });
 
     // 3. Classic Channel
@@ -130,7 +130,7 @@ async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 500, 100, 500],
       lightColor: '#FFD700',
-      sound: 'classic.mp3',
+      sound: 'classic',
     });
 
     // 4. Modern Channel
@@ -139,7 +139,7 @@ async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 100, 100, 100, 100, 500],
       lightColor: '#FF00FF',
-      sound: 'modern.mp3',
+      sound: 'modern',
     });
   }
 
