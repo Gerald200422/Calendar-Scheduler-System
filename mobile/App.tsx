@@ -29,13 +29,18 @@ export default function App() {
       setSession(session);
     });
 
-    // 2. Register for Push Notifications
-    registerForPushNotificationsAsync().then(token => {
-      if (token) {
-        setExpoPushToken(token);
-        saveTokenToSupabase(token);
+    // 3. Listen for notification interactions (e.g. Stop button)
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const actionIdentifier = response.actionIdentifier;
+      if (actionIdentifier === 'stop-alarm') {
+        const notificationId = response.notification.request.identifier;
+        Notifications.dismissNotificationAsync(notificationId);
       }
     });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   const saveTokenToSupabase = async (token: string) => {
@@ -101,9 +106,9 @@ async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === 'android') {
-    // 1. Standard Channel
-    await Notifications.setNotificationChannelAsync('alert1.mp3', {
-      name: 'Standard Alert',
+    // 1. Standard Channel (v2 to force sound refresh)
+    await Notifications.setNotificationChannelAsync('v2-alert1.mp3', {
+      name: 'Standard Alert (v2)',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
@@ -111,8 +116,8 @@ async function registerForPushNotificationsAsync() {
     });
 
     // 2. Crystal Channel
-    await Notifications.setNotificationChannelAsync('alert2.mp3', {
-      name: 'Crystal Chime',
+    await Notifications.setNotificationChannelAsync('v2-alert2.mp3', {
+      name: 'Crystal Chime (v2)',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 50, 100],
       lightColor: '#00FFFF',
@@ -120,8 +125,8 @@ async function registerForPushNotificationsAsync() {
     });
 
     // 3. Classic Channel
-    await Notifications.setNotificationChannelAsync('classic.mp3', {
-      name: 'Classic Bell',
+    await Notifications.setNotificationChannelAsync('v2-classic.mp3', {
+      name: 'Classic Bell (v2)',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 500, 100, 500],
       lightColor: '#FFD700',
@@ -129,14 +134,25 @@ async function registerForPushNotificationsAsync() {
     });
 
     // 4. Modern Channel
-    await Notifications.setNotificationChannelAsync('modern.mp3', {
-      name: 'Modern Synth',
+    await Notifications.setNotificationChannelAsync('v2-modern.mp3', {
+      name: 'Modern Synth (v2)',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 100, 100, 100, 100, 500],
       lightColor: '#FF00FF',
       sound: 'modern.mp3',
     });
   }
+
+  // Define Notification Category with 'Stop Alarm' button
+  await Notifications.setNotificationCategoryAsync('ALARM', [
+    {
+      identifier: 'stop-alarm',
+      buttonTitle: 'Stop Alarm 🛑',
+      options: {
+        opensAppToForeground: false,
+      },
+    },
+  ]);
 
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();

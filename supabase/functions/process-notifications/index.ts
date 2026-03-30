@@ -129,18 +129,28 @@ serve(async (req: Request) => {
           
           if (tokens && tokens.length > 0) {
             const expoTokens = tokens.filter(t => t.platform !== 'web').map(t => t.token)
-            const webSubscriptions = tokens.filter(t => t.platform === 'web').map(t => JSON.parse(t.token))
+            const webSubscriptions = tokens
+              .filter(t => t.platform === 'web')
+              .map(t => {
+                try {
+                  return JSON.parse(t.token)
+                } catch (e) {
+                  return null
+                }
+              })
+              .filter(sub => sub !== null)
 
             // 2a. Expo (Mobile)
             if (expoTokens.length > 0) {
-              const ringtone = profile?.ringtone_choice || 'default'
+              const ringtone = profile?.ringtone_choice || 'alert1.mp3'
               const pushData = expoTokens.map((token: string) => ({
                 to: token,
                 title: `📅 ${event.title}`,
                 body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
                 data: { event_id: event.id, ringtone },
-                sound: ringtone === 'default' ? 'default' : ringtone,
-                channelId: ringtone, // Used for Android custom sounds
+                sound: ringtone,
+                channelId: `v2-${ringtone}`, // Versioned to force sound refresh
+                categoryIdentifier: 'ALARM', // Enables 'Stop Alarm' button on mobile
                 priority: 'high',
               }))
               await fetch('https://exp.host/--/api/v2/push/send', {
@@ -175,7 +185,10 @@ serve(async (req: Request) => {
                     data: { 
                       url: 'https://calendarschedulersystem.vercel.app/',
                       ringtone 
-                    }
+                    },
+                    actions: [
+                      { action: 'stop', title: 'Stop Alarm 🛑' }
+                    ]
                   })
 
                   await webpush.sendNotification(sub, payload)
