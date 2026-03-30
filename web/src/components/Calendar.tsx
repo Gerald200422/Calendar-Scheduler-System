@@ -91,6 +91,8 @@ export default function Calendar({ userId }: CalendarProps) {
       guest_email: eventData.guestEmail,
       start_time: eventData.startTime,
       end_time: eventData.endTime,
+      notification_style: eventData.notification_style,
+      ringtone_override: eventData.ringtone_override,
     }
 
     let result;

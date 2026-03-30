@@ -128,30 +128,35 @@ serve(async (req: Request) => {
           const { data: tokens } = await supabase.from('fcm_tokens').select('token, platform').eq('user_id', notif.user_id)
           
           if (tokens && tokens.length > 0) {
-            const expoTokens = tokens.filter(t => t.platform !== 'web').map(t => t.token)
+            const expoTokens = tokens.filter((t: any) => t.platform !== 'web').map((t: any) => t.token)
             const webSubscriptions = tokens
-              .filter(t => t.platform === 'web')
-              .map(t => {
+              .filter((t: any) => t.platform === 'web')
+              .map((t: any) => {
                 try {
                   return JSON.parse(t.token)
                 } catch (e) {
                   return null
                 }
               })
-              .filter(sub => sub !== null)
+              .filter((sub: any) => sub !== null)
 
             // 2a. Expo (Mobile)
             if (expoTokens.length > 0) {
-                const ringtone = profile?.ringtone_choice || 'samsung_ringtone.mp3'
+                // Priority: 1. Event Override, 2. Profile Choice, 3. Default
+                const ringtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
+                const isAlarm = event.notification_style === 'alarm'
+                
                 const pushData = expoTokens.map((token: string) => ({
                   to: token,
                   title: `📅 ${event.title}`,
                   body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
                   data: { event_id: event.id, ringtone },
-                  sound: ringtone.replace('.mp3', ''),
-                  channelId: `v4-${ringtone.replace('.mp3', '')}`, // v4 to match App.tsx
-                  categoryIdentifier: 'ALARM',
-                  priority: 'high',
+                  // Use 'default' sound if not alarm style
+                  sound: isAlarm ? ringtone.replace('.mp3', '') : 'default',
+                  // Use v4 channel for alarms, default for others
+                  channelId: isAlarm ? `v4-${ringtone.replace('.mp3', '')}` : 'default',
+                  categoryIdentifier: isAlarm ? 'ALARM' : undefined,
+                  priority: isAlarm ? 'high' : 'normal',
                 }))
               await fetch('https://exp.host/--/api/v2/push/send', {
                 method: 'POST',
@@ -163,9 +168,12 @@ serve(async (req: Request) => {
 
             // 2b. Web Push (Laptop & PWA)
             if (webSubscriptions.length > 0) {
+              // @ts-ignore
               const VAPID_PUBLIC = Deno.env.get('VAPID_PUBLIC_KEY') || 'BK-ZiqbWSyfXp4VAHzQ5RJeBsZ0TABjvsiK-hLBzMv8xZicbVRk5fHG5Z1fzfK9oJsAxixiRLelmbV8bXbyNGnk'
+              // @ts-ignore
               const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY') || 'g-uviKcDRN0LEUfdaulzTZ5EAvk3qGV5m4jqZZm_0_U'
-              const ringtone = profile?.ringtone_choice || 'samsung_ringtone.mp3'
+              // Priority: 1. Event Override, 2. Profile Choice, 3. Default
+              const ringtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
 
               // We'll use a dynamic import for web-push to handle ESM in Deno
               // @ts-ignore

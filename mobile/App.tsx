@@ -81,13 +81,14 @@ export default function App() {
       
       <View style={styles.buttonContainer}>
         <Button
-          title="Test Local Notification"
+          title="Test Samsung Ringtone Alert"
           onPress={async () => {
             await Notifications.scheduleNotificationAsync({
               content: {
-                title: "Local Test Alert! 📅",
-                body: 'This proves the app can receive alerts.',
-                sound: 'default',
+                title: "Samsung Ringtone Test! 📱",
+                body: 'Checking if the custom sound is working...',
+                sound: 'samsung_ringtone',
+                channelId: 'v4-samsung_ringtone',
               },
               trigger: {
                 type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
