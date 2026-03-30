@@ -36,12 +36,16 @@ CREATE TABLE IF NOT EXISTS public.fcm_tokens (
 CREATE TABLE IF NOT EXISTS public.notification_queue (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   event_id UUID REFERENCES public.events ON DELETE CASCADE UNIQUE,
-  user_id UUID REFERENCES auth.users NOT NULL,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   status TEXT DEFAULT 'pending', -- 'pending', 'sent', 'failed'
   scheduled_for TIMESTAMP WITH TIME ZONE NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
+
+-- Performance Indexes for Background Sweeps
+CREATE INDEX IF NOT EXISTS idx_notification_queue_status_scheduled ON public.notification_queue (status, scheduled_for);
+CREATE INDEX IF NOT EXISTS idx_events_user_time ON public.events (user_id, start_time);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -73,5 +77,5 @@ ALTER TABLE public.processing_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Only service role can manage logs" ON public.processing_logs FOR ALL USING (false) WITH CHECK (auth.role() = 'service_role');
 
 -- 8. Enable Realtime (Must be run in the SQL Editor)
--- ALTER PUBLICATION supabase_realtime ADD TABLE public.events;
--- ALTER PUBLICATION supabase_realtime ADD TABLE public.notification_queue;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.events;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.notification_queue;
