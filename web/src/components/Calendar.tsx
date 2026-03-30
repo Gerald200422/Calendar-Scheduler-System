@@ -5,12 +5,11 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInte
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { cn } from '@/lib/utils'
 import EventModal from './EventModal'
 import { supabase } from '@/lib/supabase'
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+// Using shared cn from @/lib/utils
 
 interface CalendarProps {
   userId: string
@@ -158,50 +157,51 @@ export default function Calendar({ userId }: CalendarProps) {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-8 bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] text-white">
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 bg-white/5 backdrop-blur-2xl rounded-[1.5rem] md:rounded-[2.5rem] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] text-white">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 gap-6">
         <div>
-          <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent tracking-tight">
             {format(currentMonth, 'MMMM yyyy')}
           </h2>
-          <p className="text-zinc-500 text-sm mt-2 font-medium">Elevate your productivity with smart scheduling.</p>
+          <p className="text-zinc-500 text-xs md:text-sm mt-2 font-medium">Smart scheduling for a modern lifestyle.</p>
         </div>
         <div className="flex items-center space-x-3 w-full md:w-auto">
-          <div className="flex rounded-2xl bg-white/5 p-1 border border-white/5">
+          <div className="flex rounded-xl md:rounded-2xl bg-white/5 p-1 border border-white/5">
             <button 
               onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-              className="p-2.5 hover:bg-white/10 rounded-xl transition-all"
+              className="p-2 md:p-2.5 hover:bg-white/10 rounded-lg md:rounded-xl transition-all"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </button>
             <button 
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-              className="p-2.5 hover:bg-white/10 rounded-xl transition-all"
+              className="p-2 md:p-2.5 hover:bg-white/10 rounded-lg md:rounded-xl transition-all"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </button>
           </div>
           <button 
             onClick={() => handleOpenModal(new Date())}
-            className="flex-1 md:flex-none flex items-center justify-center px-6 py-3 bg-gradient-to-r from-pink-600 to-indigo-600 rounded-2xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_8px_20px_-6px_rgba(219,39,119,0.4)]"
+            className="flex-1 md:flex-none flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-pink-600 to-indigo-600 rounded-xl md:rounded-2xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_8px_20px_-6px_rgba(219,39,119,0.4)]"
           >
-            <Plus size={20} className="mr-2" /> New Event
+            <Plus size={18} className="mr-2" /> New Event
           </button>
         </div>
       </div>
 
       {/* Weekdays Overlay */}
-      <div className="grid grid-cols-7 mb-6">
+      <div className="grid grid-cols-7 mb-4 md:mb-6">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="text-center text-[11px] font-black text-zinc-600 uppercase tracking-[0.2em]">
-            {day}
+          <div key={day} className="text-center text-[9px] md:text-[11px] font-black text-zinc-600 uppercase tracking-[0.1em] md:tracking-[0.2em]">
+            <span className="hidden sm:inline">{day}</span>
+            <span className="sm:hidden">{day[0]}</span>
           </div>
         ))}
       </div>
 
       {/* Days Grid */}
-      <div className="grid grid-cols-7 gap-3">
+      <div className="grid grid-cols-7 gap-1 md:gap-3">
         {days.map((day, idx) => {
           const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0)
           const dayEnd = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)
@@ -221,47 +221,43 @@ export default function Calendar({ userId }: CalendarProps) {
               key={day.toString()}
               onClick={() => handleOpenModal(day)}
               className={cn(
-                "min-h-[140px] p-4 cursor-pointer transition-all rounded-3xl relative group border",
+                "min-h-[80px] md:min-h-[140px] p-2 md:p-4 cursor-pointer transition-all rounded-xl md:rounded-3xl relative group border",
                 !isCurrentMonth ? "opacity-20 border-transparent pointer-events-none" : "hover:bg-white/5 bg-white/[0.02]",
                 isSelected ? "border-white/20 bg-white/10 shadow-inner" : "border-white/5",
                 isToday && "ring-2 ring-pink-500/50 border-pink-500/20"
               )}
             >
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between items-start mb-1 md:mb-2">
                 <span className={cn(
-                  "text-lg font-bold tracking-tight",
+                  "text-sm md:text-lg font-bold tracking-tight",
                   isToday ? "text-pink-500" : "text-white/70"
                 )}>
                   {format(day, 'd')}
                 </span>
                 {isToday && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
+                  <div className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
                 )}
               </div>
               
               {/* Event Indicators */}
-              <div className="space-y-1.5 overflow-hidden">
-                {dayEvents.map(e => (
+              <div className="space-y-1 overflow-hidden">
+                {dayEvents.slice(0, 3).map(e => (
                   <div 
                     key={e.id} 
                     onClick={(event) => {
                       event.stopPropagation()
                       handleOpenModal(day, e)
                     }}
-                    className="group/event flex items-center justify-between text-[11px] font-semibold px-2.5 py-1.5 bg-indigo-500/10 text-indigo-300 rounded-xl border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
+                    className="flex items-center text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 bg-indigo-500/10 text-indigo-300 rounded-lg md:rounded-xl border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors truncate"
                   >
-                    <span className="truncate flex-1 mr-1">
-                      {format(parseISO(e.start_time), isSameDay(parseISO(e.start_time), parseISO(e.end_time)) ? 'HH:mm' : 'MM/dd HH:mm')} - {format(parseISO(e.end_time), isSameDay(parseISO(e.start_time), parseISO(e.end_time)) ? 'HH:mm' : 'MM/dd HH:mm')} {e.title}
-                    </span>
+                    <span className="truncate">{e.title}</span>
                   </div>
                 ))}
-              </div>
-
-              {/* Add hint */}
-              <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-zinc-400">
-                  <Plus size={14} />
-                </div>
+                {dayEvents.length > 3 && (
+                  <p className="text-[7px] md:text-[9px] text-zinc-600 font-black uppercase text-center mt-1">
+                    +{dayEvents.length - 3} more
+                  </p>
+                )}
               </div>
             </div>
           )
