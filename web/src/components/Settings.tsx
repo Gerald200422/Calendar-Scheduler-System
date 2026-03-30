@@ -16,6 +16,25 @@ export default function Settings({ userId }: SettingsProps) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [playingId, setPlayingId] = useState<string | null>(null)
+
+  const playPreview = (rt: any) => {
+    // 1. Audio Preview
+    setPlayingId(rt.id)
+    const audio = new Audio(rt.url)
+    audio.play().catch(e => console.warn('Audio play failed:', e))
+    audio.onended = () => setPlayingId(null)
+
+    // 2. Vibration Preview (for Mobile/PWA)
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      let pattern = [200, 100, 200]
+      if (rt.id === 'alert2.wav') pattern = [100, 50, 100, 50, 100, 50, 100]
+      else if (rt.id === 'classic.wav') pattern = [500, 110, 500, 110, 500]
+      else if (rt.id === 'modern.wav') pattern = [100, 100, 100, 100, 100, 100, 500]
+      
+      navigator.vibrate(pattern)
+    }
+  }
 
   const fetchProfile = useCallback(async () => {
     setLoading(true)
@@ -65,10 +84,10 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   const ringtones = [
-    { id: 'alert1.wav', name: 'Standard Alert' },
-    { id: 'alert2.wav', name: 'Crystal Chime' },
-    { id: 'classic.wav', name: 'Classic Bell' },
-    { id: 'modern.wav', name: 'Modern Synth' },
+    { id: 'alert1.wav', name: 'Standard Alert', url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_783cd3a30c.mp3' },
+    { id: 'alert2.wav', name: 'Crystal Chime', url: 'https://cdn.pixabay.com/audio/2021/08/04/audio_062141506b.mp3' },
+    { id: 'classic.wav', name: 'Classic Bell', url: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c030383182.mp3' },
+    { id: 'modern.wav', name: 'Modern Synth', url: 'https://cdn.pixabay.com/audio/2024/02/08/audio_82c612347d.mp3' },
   ]
 
   if (loading) {
@@ -154,21 +173,33 @@ export default function Settings({ userId }: SettingsProps) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
             {ringtones.map((rt) => (
-              <button
-                key={rt.id}
-                onClick={() => setRingtone(rt.id)}
-                className={`flex items-center justify-between px-5 md:px-6 py-4 md:py-5 rounded-xl md:rounded-2xl border-2 transition-all duration-300 ${
-                  ringtone === rt.id 
-                    ? 'bg-violet-500/10 border-violet-500 text-violet-500 shadow-[0_0_20px_rgba(139,92,246,0.2)]' 
-                    : 'bg-white/[0.02] border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300'
-                }`}
-              >
-                <div className="flex flex-col items-start text-left">
-                  <span className="text-xs md:text-sm font-bold">{rt.name}</span>
-                  <span className="text-[8px] md:text-[10px] text-zinc-600 uppercase tracking-tighter mt-0.5 font-black">{rt.id}</span>
-                </div>
-                {ringtone === rt.id && <div className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,1)] animate-pulse" />}
-              </button>
+              <div key={rt.id} className="relative group/rt">
+                <button
+                  onClick={() => setRingtone(rt.id)}
+                  className={`w-full flex items-center justify-between px-5 md:px-6 py-4 md:py-5 rounded-xl md:rounded-2xl border-2 transition-all duration-300 ${
+                    ringtone === rt.id 
+                      ? 'bg-violet-500/10 border-violet-500 text-violet-500 shadow-[0_0_20px_rgba(139,92,246,0.2)]' 
+                      : 'bg-white/[0.02] border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300'
+                  }`}
+                >
+                  <div className="flex flex-col items-start text-left">
+                    <span className="text-xs md:text-sm font-bold">{rt.name}</span>
+                    <span className="text-[8px] md:text-[10px] text-zinc-600 uppercase tracking-tighter mt-0.5 font-black">{rt.id}</span>
+                  </div>
+                  {ringtone === rt.id && <div className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,1)] animate-pulse" />}
+                </button>
+                
+                {/* Preview Button Overlay */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    playPreview(rt)
+                  }}
+                  className={`absolute right-12 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white/5 hover:bg-violet-500/20 text-zinc-400 hover:text-white transition-all ${playingId === rt.id ? 'text-violet-400 bg-violet-500/10' : ''}`}
+                >
+                  <Volume2 size={16} className={playingId === rt.id ? 'animate-pulse' : ''} />
+                </button>
+              </div>
             ))}
           </div>
         </section>
