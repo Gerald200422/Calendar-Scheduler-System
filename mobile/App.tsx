@@ -101,11 +101,36 @@ async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
+    // 1. Standard Channel
+    await Notifications.setNotificationChannelAsync('alert1.wav', {
+      name: 'Standard Alert',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
+    });
+
+    // 2. Crystal Channel
+    await Notifications.setNotificationChannelAsync('alert2.wav', {
+      name: 'Crystal Chime',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 100, 50, 100],
+      lightColor: '#00FFFF',
+    });
+
+    // 3. Classic Channel
+    await Notifications.setNotificationChannelAsync('classic.wav', {
+      name: 'Classic Bell',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 500, 100, 500],
+      lightColor: '#FFD700',
+    });
+
+    // 4. Modern Channel
+    await Notifications.setNotificationChannelAsync('modern.wav', {
+      name: 'Modern Synth',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 100, 100, 100, 100, 100, 500],
+      lightColor: '#FF00FF',
     });
   }
 
