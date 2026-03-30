@@ -69,19 +69,13 @@ export default function Dashboard({ userId }: DashboardProps) {
 
   const triggerSweep = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-notifications`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`
-        }
-      })
-      const result = await response.json()
-      alert('Sweep Triggered: ' + (result.message || result.error || 'Check logs for details.'))
+      const { data, error } = await supabase.functions.invoke('process-notifications')
+      if (error) throw error
+      
+      alert('Sweep Triggered Successfully')
       fetchData()
     } catch (err: any) {
-      alert('Failed to trigger sweep: ' + err.message)
+      alert('Failed to trigger sweep: ' + (err.message || 'Check logs for details.'))
     }
   }
 

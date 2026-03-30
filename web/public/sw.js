@@ -1,15 +1,22 @@
 self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : { title: 'New Notification', body: 'You have a new message!' };
+  let data = { title: 'Event Reminder', body: 'You have an upcoming event!' };
+  
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data = { title: 'Event Reminder', body: event.data.text() };
+    }
+  }
   
   const options = {
     body: data.body,
     icon: '/logo.png',
     badge: '/logo.png',
-    data: data.data || {},
-    vibrate: [100, 50, 100],
-    actions: [
-      { action: 'open', title: 'Open Scheduler' }
-    ]
+    vibrate: [200, 100, 200],
+    tag: 'scheduler-notification',
+    renotify: true,
+    data: data.data || {}
   };
 
   event.waitUntil(

@@ -149,27 +149,35 @@ serve(async (req: Request) => {
               sentPushCount += expoTokens.length
             }
 
-            // 2b. Web Push (Laptop)
+            // 2b. Web Push (Laptop & PWA)
             if (webSubscriptions.length > 0) {
-              // Note: We use a dynamic import for web-push to handle ESM in Deno
-              // For simplicity in this demo environment, we'll use a fetch-based mini implementation 
-              // or skip if no library is injected. But for a real prod, we'd use: 
-              // import webpush from "npm:web-push"
-              
               const VAPID_PUBLIC = Deno.env.get('VAPID_PUBLIC_KEY') || 'BK-ZiqbWSyfXp4VAHzQ5RJeBsZ0TABjvsiK-hLBzMv8xZicbVRk5fHG5Z1fzfK9oJsAxixiRLelmbV8bXbyNGnk'
               const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY') || 'g-uviKcDRN0LEUfdaulzTZ5EAvk3qGV5m4jqZZm_0_U'
+
+              // We'll use a dynamic import for web-push to handle ESM in Deno
+              // @ts-ignore
+              const webpush = await import("https://esm.sh/web-push@3.6.6")
               
-              // We'll iterate and send to each subscription
-              // In this specific environment, we'll log the attempt. 
-              // Full implementation would require 'web-push' sign-off.
+              webpush.setVapidDetails(
+                'mailto:gerald.p@gmail.com',
+                VAPID_PUBLIC,
+                VAPID_PRIVATE
+              )
+
               for (const sub of webSubscriptions) {
                 try {
-                  // This is a placeholder for the actual web-push fetch call
-                  // Log the event for now as web-push requires complex VAPID signing in raw fetch
-                  await logToDb('info', `Web Push triggered for ${sub.endpoint.slice(0, 30)}...`)
+                  const payload = JSON.stringify({
+                    title: `📅 ${event.title}`,
+                    body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
+                    data: { url: 'https://calendarschedulersystem.vercel.app/' }
+                  })
+
+                  await webpush.sendNotification(sub, payload)
                   sentPushCount++
-                } catch (e) {
+                  await logToDb('info', `Web Push delivered to ${sub.endpoint.slice(0, 30)}...`)
+                } catch (e: any) {
                   console.error('Web push failed for subscription', e)
+                  await logToDb('error', `Web Push failed for ${sub.endpoint.slice(0, 30)}...: ${e.message}`)
                 }
               }
             }
