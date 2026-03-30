@@ -10,7 +10,7 @@ interface SettingsProps {
 
 export default function Settings({ userId }: SettingsProps) {
   const [notificationType, setNotificationType] = useState('both')
-  const [ringtone, setRingtone] = useState('alert1.mp3')
+  const [ringtone, setRingtone] = useState('samsung_alert.mp3')
   const [email, setEmail] = useState('')
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(true)
@@ -26,9 +26,9 @@ export default function Settings({ userId }: SettingsProps) {
     // 1. Immediate Vibration (Tactile feedback)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       let pattern = [200, 100, 200]
-      if (rt.id === 'alert2.mp3') pattern = [100, 50, 100, 50, 100, 50, 100]
-      else if (rt.id === 'classic.mp3') pattern = [500, 110, 500, 110, 500]
-      else if (rt.id === 'modern.mp3') pattern = [100, 100, 100, 100, 100, 100, 500]
+      if (rt.id === 'crystal_chime.mp3') pattern = [100, 50, 100, 50, 100, 50, 100]
+      else if (rt.id === 'classic_bell.mp3') pattern = [500, 110, 500, 110, 500]
+      else if (rt.id === 'modern_synth.mp3') pattern = [100, 100, 100, 100, 100, 100, 500]
       
       navigator.vibrate(pattern)
     }
@@ -108,10 +108,10 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   const ringtones = [
-    { id: 'alert1.mp3', name: 'Samsung Alert', url: '/sounds/alert1.mp3' },
-    { id: 'alert2.mp3', name: 'Crystal Chime', url: '/sounds/alert2.mp3' },
-    { id: 'classic.mp3', name: 'Classic Bell', url: '/sounds/classic.mp3' },
-    { id: 'modern.mp3', name: 'Modern Synth', url: '/sounds/modern.mp3' },
+    { id: 'samsung_alert.mp3', name: 'Samsung Alert', url: '/sounds/samsung_alert.mp3' },
+    { id: 'crystal_chime.mp3', name: 'Crystal Chime', url: '/sounds/crystal_chime.mp3' },
+    { id: 'classic_bell.mp3', name: 'Classic Bell', url: '/sounds/classic_bell.mp3' },
+    { id: 'modern_synth.mp3', name: 'Modern Synth', url: '/sounds/modern_synth.mp3' },
   ]
 
   if (loading) {

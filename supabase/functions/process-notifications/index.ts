@@ -142,17 +142,17 @@ serve(async (req: Request) => {
 
             // 2a. Expo (Mobile)
             if (expoTokens.length > 0) {
-              const ringtone = profile?.ringtone_choice || 'alert1.mp3'
-              const pushData = expoTokens.map((token: string) => ({
-                to: token,
-                title: `📅 ${event.title}`,
-                body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
-                data: { event_id: event.id, ringtone },
-                sound: ringtone,
-                channelId: `v2-${ringtone}`, // Versioned to force sound refresh
-                categoryIdentifier: 'ALARM', // Enables 'Stop Alarm' button on mobile
-                priority: 'high',
-              }))
+                const ringtone = profile?.ringtone_choice || 'samsung_alert.mp3'
+                const pushData = expoTokens.map((token: string) => ({
+                  to: token,
+                  title: `📅 ${event.title}`,
+                  body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
+                  data: { event_id: event.id, ringtone },
+                  sound: ringtone.replace('.mp3', ''),
+                  channelId: `v3-${ringtone.replace('.mp3', '')}`, // v3 to match App.tsx
+                  categoryIdentifier: 'ALARM',
+                  priority: 'high',
+                }))
               await fetch('https://exp.host/--/api/v2/push/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -165,7 +165,7 @@ serve(async (req: Request) => {
             if (webSubscriptions.length > 0) {
               const VAPID_PUBLIC = Deno.env.get('VAPID_PUBLIC_KEY') || 'BK-ZiqbWSyfXp4VAHzQ5RJeBsZ0TABjvsiK-hLBzMv8xZicbVRk5fHG5Z1fzfK9oJsAxixiRLelmbV8bXbyNGnk'
               const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY') || 'g-uviKcDRN0LEUfdaulzTZ5EAvk3qGV5m4jqZZm_0_U'
-              const ringtone = profile?.ringtone_choice || 'alert1.mp3'
+              const ringtone = profile?.ringtone_choice || 'samsung_alert.mp3'
 
               // We'll use a dynamic import for web-push to handle ESM in Deno
               // @ts-ignore

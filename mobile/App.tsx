@@ -106,40 +106,40 @@ async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === 'android') {
-    // 1. Standard Channel (v2 to force sound refresh)
-    await Notifications.setNotificationChannelAsync('v2-alert1.mp3', {
-      name: 'Standard Alert (v2)',
+    // 1. Samsung Channel (v3 to force refresh)
+    await Notifications.setNotificationChannelAsync('v3-samsung_alert', {
+      name: 'Samsung Alert',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
-      sound: 'alert1',
+      sound: 'samsung_alert',
     });
 
     // 2. Crystal Channel
-    await Notifications.setNotificationChannelAsync('v2-alert2.mp3', {
-      name: 'Crystal Chime (v2)',
+    await Notifications.setNotificationChannelAsync('v3-crystal_chime', {
+      name: 'Crystal Chime',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 50, 100],
       lightColor: '#00FFFF',
-      sound: 'alert2',
+      sound: 'crystal_chime',
     });
 
     // 3. Classic Channel
-    await Notifications.setNotificationChannelAsync('v2-classic.mp3', {
-      name: 'Classic Bell (v2)',
+    await Notifications.setNotificationChannelAsync('v3-classic_bell', {
+      name: 'Classic Bell',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 500, 100, 500],
       lightColor: '#FFD700',
-      sound: 'classic',
+      sound: 'classic_bell',
     });
 
     // 4. Modern Channel
-    await Notifications.setNotificationChannelAsync('v2-modern.mp3', {
-      name: 'Modern Synth (v2)',
+    await Notifications.setNotificationChannelAsync('v3-modern_synth', {
+      name: 'Modern Synth',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 100, 100, 100, 100, 500],
       lightColor: '#FF00FF',
-      sound: 'modern',
+      sound: 'modern_synth',
     });
   }
 
