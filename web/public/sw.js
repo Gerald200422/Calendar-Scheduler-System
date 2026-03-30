@@ -22,13 +22,27 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: '/logo.png',
-    badge: '/logo.png',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-192x192.png',
     vibrate: vibrationPattern,
-    tag: 'scheduler-notification',
-    renotify: true,
-    data: data.data || {}
+    data: data.data,
+    actions: data.actions || [],
+    tag: 'scheduler-alert',
+    renotify: true
   };
+
+  // Broadcast to all open tabs to play the sound locally (Laptops/PWAs)
+  if (data.data?.ringtone) {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'RING_ALARM',
+          ringtone: data.data.ringtone,
+          title: data.title
+        });
+      });
+    });
+  }
 
   event.waitUntil(
     self.registration.showNotification(data.title, options)
