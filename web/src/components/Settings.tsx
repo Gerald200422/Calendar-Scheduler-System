@@ -108,7 +108,7 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   const ringtones = [
-    { id: 'alert1.mp3', name: 'Standard Alert', url: '/sounds/alert1.mp3' },
+    { id: 'alert1.mp3', name: 'Samsung Alert', url: '/sounds/alert1.mp3' },
     { id: 'alert2.mp3', name: 'Crystal Chime', url: '/sounds/alert2.mp3' },
     { id: 'classic.mp3', name: 'Classic Bell', url: '/sounds/classic.mp3' },
     { id: 'modern.mp3', name: 'Modern Synth', url: '/sounds/modern.mp3' },
