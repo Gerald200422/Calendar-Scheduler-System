@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   full_name TEXT,
   email TEXT UNIQUE,
-  notification_type TEXT DEFAULT 'push', -- 'push', 'email', or 'both'
-  ringtone_choice TEXT DEFAULT 'alert1.wav'
+  notification_type TEXT DEFAULT 'both', -- 'push', 'email', or 'both'
+  ringtone_choice TEXT DEFAULT 'samsung_ringtone.mp3'
 );
 
 -- 2. Events (Calendar Data)
@@ -20,6 +20,10 @@ CREATE TABLE IF NOT EXISTS public.events (
   guest_email TEXT,
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  notification_style TEXT DEFAULT 'push', -- 'push' (default beep) vs 'alarm' (loud ringtone)
+  ringtone_override TEXT, -- Per-event ringtone selection
+  notification_type TEXT DEFAULT 'both', -- 'push', 'email', or 'both' override
+  ringtone_duration INTEGER DEFAULT 30, -- Playback duration in seconds
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
@@ -28,7 +32,7 @@ CREATE TABLE IF NOT EXISTS public.fcm_tokens (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users NOT NULL,
   token TEXT NOT NULL UNIQUE,
-  platform TEXT, -- 'ios', 'android'
+  platform TEXT, -- 'ios', 'android', 'web'
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
@@ -58,11 +62,6 @@ CREATE POLICY "Users can manage their own profile" ON public.profiles FOR ALL US
 CREATE POLICY "Users can manage their own events" ON public.events FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage their own tokens" ON public.fcm_tokens FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can view their own notifications" ON public.notification_queue FOR SELECT USING (auth.uid() = user_id);
-
--- 6. Cron Job Setup (Requires pg_cron extension)
--- To execute this, ensure you have the service_role key updated in the command below.
--- CREATE EXTENSION IF NOT EXISTS pg_cron;
--- CREATE EXTENSION IF NOT EXISTS pg_net;
 
 -- 7. Diagnostic Logs (For debugging)
 CREATE TABLE IF NOT EXISTS public.processing_logs (
