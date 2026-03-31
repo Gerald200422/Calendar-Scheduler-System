@@ -141,22 +141,53 @@ export default function App() {
 
           {events.length > 0 ? events.map((event) => {
             const hasEnded = new Date(event.end_time) < new Date();
+            const isActive = new Date(event.start_time) <= new Date() && !hasEnded;
+            const isDeleted = event.status === 'deleted';
             const startStr = new Date(event.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
             
             return (
-              <View key={event.id} style={[styles.eventCard, hasEnded && styles.eventCardEnded]}>
-                <View style={[styles.timeContainer, hasEnded && styles.timeContainerEnded]}>
-                  <Text style={[styles.timeText, hasEnded && styles.timeTextEnded]}>{startStr}</Text>
+              <View key={event.id} style={[
+                styles.eventCard, 
+                hasEnded && styles.eventCardEnded,
+                isDeleted && styles.eventCardDeleted
+              ]}>
+                <View style={[
+                  styles.timeContainer, 
+                  hasEnded && styles.timeContainerEnded,
+                  isActive && styles.timeContainerActive,
+                  isDeleted && styles.timeContainerDeleted
+                ]}>
+                  <Text style={[
+                    styles.timeText, 
+                    hasEnded && styles.timeTextEnded,
+                    isActive && styles.timeTextActive,
+                    isDeleted && styles.timeTextDeleted
+                  ]}>{startStr}</Text>
                 </View>
                 <View style={styles.eventInfo}>
-                  <Text style={[styles.eventTitle, hasEnded && styles.eventTitleEnded]}>{event.title}</Text>
+                  <Text style={[
+                    styles.eventTitle, 
+                    (hasEnded || isDeleted) && styles.eventTitleEnded
+                  ]}>{event.title}</Text>
                   <Text style={styles.eventDesc} numberOfLines={1}>{event.description || 'No description'}</Text>
                 </View>
-                {hasEnded && (
-                  <View style={styles.endedBadge}>
-                    <Text style={styles.endedText}>DONE</Text>
-                  </View>
-                )}
+                <View style={[
+                  styles.statusBadge,
+                  isDeleted ? styles.statusBadgeDeleted :
+                  hasEnded ? styles.statusBadgeEnded :
+                  isActive ? styles.statusBadgeActive :
+                  styles.statusBadgeUpcoming
+                ]}>
+                  <Text style={[
+                    styles.statusText,
+                    isDeleted ? styles.statusTextDeleted :
+                    hasEnded ? styles.statusTextEnded :
+                    isActive ? styles.statusTextActive :
+                    styles.statusTextUpcoming
+                  ]}>
+                    {isDeleted ? 'DELETED' : hasEnded ? 'ENDED' : isActive ? 'ACTIVE' : 'UPCOMING'}
+                  </Text>
+                </View>
               </View>
             );
           }) : (
@@ -362,8 +393,13 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     backgroundColor: '#f1f5f9',
   },
+  eventCardDeleted: {
+    opacity: 0.3,
+    backgroundColor: '#fee2e220',
+    borderColor: '#ef444420',
+  },
   timeContainer: {
-    width: 55,
+    width: 60,
     height: 40,
     backgroundColor: '#6366f110',
     borderRadius: 12,
@@ -376,6 +412,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#94a3b820',
     borderColor: '#94a3b830',
   },
+  timeContainerActive: {
+    backgroundColor: '#22c55e20',
+    borderColor: '#22c55e40',
+  },
+  timeContainerDeleted: {
+    backgroundColor: '#ef444410',
+    borderColor: '#ef444420',
+  },
   timeText: {
     fontSize: 12,
     fontWeight: '800',
@@ -383,6 +427,12 @@ const styles = StyleSheet.create({
   },
   timeTextEnded: {
     color: '#94a3b8',
+  },
+  timeTextActive: {
+    color: '#22c55e',
+  },
+  timeTextDeleted: {
+    color: '#ef4444',
   },
   eventInfo: {
     flex: 1,
@@ -396,23 +446,50 @@ const styles = StyleSheet.create({
   },
   eventTitleEnded: {
     textDecorationLine: 'line-through',
-    color: '#94a3b8',
+    color: '#64748b',
   },
   eventDesc: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#64748b',
     marginTop: 2,
   },
-  endedBadge: {
-    backgroundColor: '#94a3b820',
+  statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
+    borderWidth: 1,
   },
-  endedText: {
+  statusBadgeUpcoming: {
+    backgroundColor: '#6366f110',
+    borderColor: '#6366f130',
+  },
+  statusBadgeActive: {
+    backgroundColor: '#22c55e20',
+    borderColor: '#22c55e40',
+  },
+  statusBadgeEnded: {
+    backgroundColor: '#94a3b810',
+    borderColor: '#94a3b820',
+  },
+  statusBadgeDeleted: {
+    backgroundColor: '#ef444415',
+    borderColor: '#ef444430',
+  },
+  statusText: {
     fontSize: 8,
     fontWeight: '900',
-    color: '#94a3b8',
+  },
+  statusTextUpcoming: {
+    color: '#6366f1',
+  },
+  statusTextActive: {
+    color: '#16a34a',
+  },
+  statusTextEnded: {
+    color: '#64748b',
+  },
+  statusTextDeleted: {
+    color: '#ef4444',
   },
   emptyContainer: {
     padding: 40,

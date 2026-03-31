@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS public.events (
   ringtone_override TEXT, -- Per-event ringtone selection
   notification_type TEXT DEFAULT 'both', -- 'push', 'email', or 'both' override
   ringtone_duration INTEGER DEFAULT 30, -- Playback duration in seconds
+  status TEXT DEFAULT 'upcoming', -- 'upcoming', 'active', 'ended', 'deleted'
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 

@@ -126,6 +126,17 @@ export default function Dashboard({ userId }: DashboardProps) {
                         {format(parseISO(nextEvent.start_time), 'h:mm a')}
                       </span>
                     </div>
+                    {/* Status Badge for Next Event */}
+                    <div className={`px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border ${
+                      nextEvent.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                      new Date(nextEvent.end_time) < new Date() ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
+                      new Date(nextEvent.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
+                      'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                    }`}>
+                      {nextEvent.status === 'deleted' ? 'Deleted' : 
+                       new Date(nextEvent.end_time) < new Date() ? 'Ended' :
+                       new Date(nextEvent.start_time) <= new Date() ? 'Active' : 'Upcoming'}
+                    </div>
                   </div>
                 </>
               ) : (
@@ -154,8 +165,9 @@ export default function Dashboard({ userId }: DashboardProps) {
             <div className="space-y-4 md:space-y-5">
               {todayEvents.length > 0 ? todayEvents.map(event => {
                 const hasEnded = new Date(event.end_time) < new Date()
+                const isDeleted = event.status === 'deleted'
                 return (
-                  <div key={event.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group gap-4 ${hasEnded ? 'opacity-50' : ''}`}>
+                  <div key={event.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group gap-4 ${isDeleted ? 'opacity-20 hover:opacity-40 grayscale' : hasEnded ? 'opacity-50' : ''}`}>
                     <div className="flex items-center space-x-4 md:space-x-6">
                       <div className={`w-16 h-12 md:w-20 md:h-14 rounded-xl md:rounded-2xl flex flex-col items-center justify-center font-black border text-[10px] md:text-xs ${hasEnded ? 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'}`}>
                         <div>{format(parseISO(event.start_time), 'HH:mm')}</div>
@@ -168,19 +180,17 @@ export default function Dashboard({ userId }: DashboardProps) {
                       </div>
                     </div>
                     <div className="flex items-center justify-between sm:justify-end space-x-4">
-                      {hasEnded ? (
-                        <span className="text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest bg-zinc-700/30 text-zinc-500 border border-white/5">
-                          Ended
-                        </span>
-                      ) : (
-                        <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest ${
-                          event.notification_queue?.[0]?.status === 'sent' 
-                            ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                            : 'bg-zinc-500/10 text-zinc-400 border border-white/5'
-                        }`}>
-                          {event.notification_queue?.[0]?.status || 'pending'}
-                        </span>
-                      )}
+                      {/* Detailed Status Badge */}
+                      <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest border ${
+                        event.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                        hasEnded ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
+                        new Date(event.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
+                        'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                      }`}>
+                        {event.status === 'deleted' ? 'Deleted' : 
+                         hasEnded ? 'Ended' :
+                         new Date(event.start_time) <= new Date() ? 'Active' : 'Upcoming'}
+                      </span>
                       <ChevronRight size={18} className="text-zinc-700 group-hover:text-white transition-colors" />
                     </div>
                   </div>

@@ -253,6 +253,9 @@ export default function Calendar({ userId }: CalendarProps) {
               <div className="space-y-1 overflow-hidden">
                 {dayEvents.slice(0, 3).map(e => {
                   const hasEnded = new Date(e.end_time) < new Date()
+                  const isActive = new Date(e.start_time) <= new Date() && !hasEnded
+                  const isDeleted = e.status === 'deleted'
+                  
                   return (
                     <div 
                       key={e.id} 
@@ -260,9 +263,16 @@ export default function Calendar({ userId }: CalendarProps) {
                         event.stopPropagation()
                         handleOpenModal(day, e)
                       }}
-                      className="flex items-center text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 bg-indigo-500/10 text-indigo-300 rounded-lg md:rounded-xl border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors truncate"
+                      className={cn(
+                        "flex items-center text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 rounded-lg md:rounded-xl border transition-all truncate",
+                        isDeleted ? "bg-red-500/5 text-red-500/40 border-red-500/10 grayscale opacity-30" :
+                        isActive ? "bg-green-500/10 text-green-400 border-green-500/30 animate-pulse" :
+                        hasEnded ? "bg-zinc-500/5 text-zinc-500 border-zinc-500/10" :
+                        "bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20"
+                      )}
                     >
-                      <span className={cn("truncate", hasEnded && "line-through opacity-50")}>{e.title}</span>
+                      {isActive && <div className="w-1 h-1 rounded-full bg-green-400 mr-1 shadow-[0_0_5px_rgba(74,222,128,0.8)]" />}
+                      <span className={cn("truncate", (hasEnded || isDeleted) && "line-through")}>{e.title}</span>
                     </div>
                   )
                 })}
