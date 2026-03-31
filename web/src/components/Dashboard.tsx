@@ -212,8 +212,26 @@ export default function Dashboard({ userId }: DashboardProps) {
             ))}
             
             {upcomingEvents.length === 0 && (
-              <p className="text-zinc-600 text-sm text-center py-20 md:py-40 italic">Quiet week ahead...</p>
+              <p className="text-zinc-600 text-sm text-center py-20 italic">Quiet week ahead...</p>
             )}
+          </div>
+
+          <div className="mt-16 pt-10 border-t border-white/5 space-y-8">
+            <h3 className="text-lg md:text-xl font-bold tracking-tight opacity-50">Recent History</h3>
+            <div className="space-y-6">
+              {historyEvents.slice(0, 4).map((event) => (
+                <div key={event.id} className="group opacity-40 hover:opacity-100 transition-opacity">
+                  <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover:text-pink-500/60 transition-colors">
+                    {format(parseISO(event.end_time), 'MMM d')}
+                  </p>
+                  <h4 className="text-xs md:text-sm font-bold text-white line-through decoration-zinc-500">{event.title}</h4>
+                </div>
+              ))}
+              
+              {historyEvents.length === 0 && (
+                <p className="text-zinc-700 text-[10px] italic">No recent history.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

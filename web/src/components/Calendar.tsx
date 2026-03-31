@@ -251,18 +251,21 @@ export default function Calendar({ userId }: CalendarProps) {
               
               {/* Event Indicators */}
               <div className="space-y-1 overflow-hidden">
-                {dayEvents.slice(0, 3).map(e => (
-                  <div 
-                    key={e.id} 
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      handleOpenModal(day, e)
-                    }}
-                    className="flex items-center text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 bg-indigo-500/10 text-indigo-300 rounded-lg md:rounded-xl border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors truncate"
-                  >
-                    <span className="truncate">{e.title}</span>
-                  </div>
-                ))}
+                {dayEvents.slice(0, 3).map(e => {
+                  const hasEnded = new Date(e.end_time) < new Date()
+                  return (
+                    <div 
+                      key={e.id} 
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        handleOpenModal(day, e)
+                      }}
+                      className="flex items-center text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 bg-indigo-500/10 text-indigo-300 rounded-lg md:rounded-xl border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors truncate"
+                    >
+                      <span className={cn("truncate", hasEnded && "line-through opacity-50")}>{e.title}</span>
+                    </div>
+                  )
+                })}
                 {dayEvents.length > 3 && (
                   <p className="text-[7px] md:text-[9px] text-zinc-600 font-black uppercase text-center mt-1">
                     +{dayEvents.length - 3} more

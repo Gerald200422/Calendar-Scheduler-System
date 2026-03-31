@@ -28,20 +28,27 @@ export default function RingtoneManager() {
   const startAlarm = (ringtoneFile: string, title: string, duration: number) => {
     if (audioRef.current) {
       audioRef.current.pause()
+      audioRef.current = null
     }
 
     setAlarmTitle(title)
     
     // Ensure filename has extension
     const fileName = ringtoneFile.endsWith('.mp3') ? ringtoneFile : `${ringtoneFile}.mp3`
-    const audio = new Audio(`/sounds/${fileName}`)
+    const audioPath = `/sounds/${fileName}`
+    
+    console.log(`[RingtoneManager] Attempting to play: ${audioPath}`)
+    
+    const audio = new Audio(audioPath)
     audio.loop = true
+    audio.volume = 1.0 // Explicitly set maximum volume
     audioRef.current = audio
     
     audio.play().then(() => {
+      console.log('[RingtoneManager] Playback started successfully.')
       setIsBlocked(false)
     }).catch(err => {
-      console.warn('Autoplay blocked or playback error:', err)
+      console.warn('[RingtoneManager] Autoplay blocked or playback error:', err)
       setIsBlocked(true)
     })
     
