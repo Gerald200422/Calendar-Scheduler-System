@@ -165,28 +165,30 @@ export default function App() {
                   ]}>{startStr}</Text>
                 </View>
                 <View style={styles.eventInfo}>
-                  <Text style={[
-                    styles.eventTitle, 
-                    (hasEnded || isDeleted) && styles.eventTitleEnded
-                  ]}>{event.title}</Text>
+                  <View style={styles.titleRow}>
+                    <Text style={[
+                      styles.eventTitle, 
+                      (hasEnded || isDeleted) && styles.eventTitleEnded
+                    ]}>{event.title}</Text>
+                    <View style={[
+                      styles.statusBadge,
+                      isDeleted ? styles.statusBadgeDeleted :
+                      hasEnded ? styles.statusBadgeEnded :
+                      isActive ? styles.statusBadgeActive :
+                      styles.statusBadgeUpcoming
+                    ]}>
+                      <Text style={[
+                        styles.statusText,
+                        isDeleted ? styles.statusTextDeleted :
+                        hasEnded ? styles.statusTextEnded :
+                        isActive ? styles.statusTextActive :
+                        styles.statusTextUpcoming
+                      ]}>
+                        {isDeleted ? 'DELETED' : hasEnded ? 'ENDED' : isActive ? 'ACTIVE' : 'UPCOMING'}
+                      </Text>
+                    </View>
+                  </View>
                   <Text style={styles.eventDesc} numberOfLines={1}>{event.description || 'No description'}</Text>
-                </View>
-                <View style={[
-                  styles.statusBadge,
-                  isDeleted ? styles.statusBadgeDeleted :
-                  hasEnded ? styles.statusBadgeEnded :
-                  isActive ? styles.statusBadgeActive :
-                  styles.statusBadgeUpcoming
-                ]}>
-                  <Text style={[
-                    styles.statusText,
-                    isDeleted ? styles.statusTextDeleted :
-                    hasEnded ? styles.statusTextEnded :
-                    isActive ? styles.statusTextActive :
-                    styles.statusTextUpcoming
-                  ]}>
-                    {isDeleted ? 'DELETED' : hasEnded ? 'ENDED' : isActive ? 'ACTIVE' : 'UPCOMING'}
-                  </Text>
                 </View>
               </View>
             );
@@ -438,6 +440,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 15,
     justifyContent: 'center',
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
   },
   eventTitle: {
     fontSize: 15,

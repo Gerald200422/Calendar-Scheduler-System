@@ -106,8 +106,18 @@ export default function Dashboard({ userId }: DashboardProps) {
               
               {nextEvent ? (
                 <>
-                  <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-                    {nextEvent.title}
+                  <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight flex flex-wrap items-center gap-4">
+                    <span>{nextEvent.title}</span>
+                    <span className={`px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border h-fit ${
+                      nextEvent.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                      new Date(nextEvent.end_time) < new Date() ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
+                      new Date(nextEvent.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
+                      'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                    }`}>
+                      {nextEvent.status === 'deleted' ? 'Deleted' : 
+                       new Date(nextEvent.end_time) < new Date() ? 'Ended' :
+                       new Date(nextEvent.start_time) <= new Date() ? 'Active' : 'Upcoming'}
+                    </span>
                   </h2>
                   <p className="text-zinc-400 text-sm md:text-lg mb-8 md:mb-10 max-w-lg line-clamp-2">
                     {nextEvent.description || 'No description provided.'}
@@ -125,17 +135,6 @@ export default function Dashboard({ userId }: DashboardProps) {
                       <span className="text-xs md:text-sm font-bold">
                         {format(parseISO(nextEvent.start_time), 'h:mm a')}
                       </span>
-                    </div>
-                    {/* Status Badge for Next Event */}
-                    <div className={`px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border ${
-                      nextEvent.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                      new Date(nextEvent.end_time) < new Date() ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
-                      new Date(nextEvent.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
-                      'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
-                    }`}>
-                      {nextEvent.status === 'deleted' ? 'Deleted' : 
-                       new Date(nextEvent.end_time) < new Date() ? 'Ended' :
-                       new Date(nextEvent.start_time) <= new Date() ? 'Active' : 'Upcoming'}
                     </div>
                   </div>
                 </>
@@ -173,24 +172,25 @@ export default function Dashboard({ userId }: DashboardProps) {
                         <div>{format(parseISO(event.start_time), 'HH:mm')}</div>
                       </div>
                       <div>
-                        <h4 className={`text-md md:text-lg font-bold text-white group-hover:text-pink-400 transition-colors tracking-tight line-clamp-1 ${hasEnded ? 'line-through text-zinc-500' : ''}`}>
-                          {event.title}
-                        </h4>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h4 className={`text-md md:text-lg font-bold text-white group-hover:text-pink-400 transition-colors tracking-tight line-clamp-1 ${hasEnded ? 'line-through text-zinc-500' : ''}`}>
+                            {event.title}
+                          </h4>
+                          <span className={`text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest border h-fit ${
+                            event.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                            hasEnded ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
+                            new Date(event.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
+                            'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                          }`}>
+                            {event.status === 'deleted' ? 'Deleted' : 
+                             hasEnded ? 'Ended' :
+                             new Date(event.start_time) <= new Date() ? 'Active' : 'Upcoming'}
+                          </span>
+                        </div>
                         <p className="text-zinc-500 text-xs truncate max-w-[200px] md:max-w-[280px]">{event.description || 'No description'}</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between sm:justify-end space-x-4">
-                      {/* Detailed Status Badge */}
-                      <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest border ${
-                        event.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                        hasEnded ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
-                        new Date(event.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
-                        'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
-                      }`}>
-                        {event.status === 'deleted' ? 'Deleted' : 
-                         hasEnded ? 'Ended' :
-                         new Date(event.start_time) <= new Date() ? 'Active' : 'Upcoming'}
-                      </span>
                       <ChevronRight size={18} className="text-zinc-700 group-hover:text-white transition-colors" />
                     </div>
                   </div>

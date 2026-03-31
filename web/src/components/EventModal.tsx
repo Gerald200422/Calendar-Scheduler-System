@@ -149,7 +149,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
       notification_style: notificationStyle,
       ringtone_override: ringtoneOverride,
       ringtone_duration: ringtoneDuration,
-      status,
+      status: status || 'upcoming',
     })
     onClose()
   }
@@ -327,30 +327,19 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               )}
             </div>
 
-            {/* Status Section */}
-            <div className="space-y-3 pt-2">
-              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1 flex items-center">
-                <CalendarIcon size={12} className="mr-2" /> Event Status
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {['upcoming', 'active', 'ended', 'deleted'].map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStatus(s)}
-                    className={`py-2 text-[9px] font-black uppercase tracking-widest rounded-xl border transition-all ${
-                      status === s 
-                        ? s === 'upcoming' ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/40 shadow-[0_0_15px_rgba(99,102,241,0.2)]' 
-                        : s === 'active' ? 'bg-green-500/20 text-green-400 border-green-500/40 shadow-[0_0_15px_rgba(34,197,94,0.2)]'
-                        : s === 'ended' ? 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40'
-                        : 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
-                        : 'bg-white/5 text-zinc-600 border-transparent hover:bg-white/10'
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+            {/* Status Section - Simplified to Toggle */}
+            <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-2">
+              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Active Status</label>
+              <button 
+                onClick={() => setStatus(status === 'deleted' ? 'upcoming' : 'deleted')}
+                className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                  status === 'deleted' 
+                    ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
+                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                }`}
+              >
+                {status === 'deleted' ? 'Soft Deleted' : 'Normal'}
+              </button>
             </div>
 
             <div className="flex items-start space-x-3 text-zinc-400 focus-within:text-pink-500 transition-colors pt-2">
