@@ -30,7 +30,7 @@ export default function App() {
     });
 
     // 3. Listen for notification interactions (e.g. Stop button)
-    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
       const actionIdentifier = response.actionIdentifier;
       if (actionIdentifier === 'stop-alarm') {
         const notificationId = response.notification.request.identifier;
@@ -38,8 +38,20 @@ export default function App() {
       }
     });
 
+    // 4. Handle incoming notifications (e.g. for auto-stop duration)
+    const notificationSubscription = Notifications.addNotificationReceivedListener(notification => {
+      const { data } = notification.request.content;
+      if (data?.type === 'ALARM' && data?.duration) {
+        const durationMs = parseInt(data.duration) * 1000;
+        setTimeout(() => {
+          Notifications.dismissNotificationAsync(notification.request.identifier);
+        }, durationMs);
+      }
+    });
+
     return () => {
-      subscription.remove();
+      responseSubscription.remove();
+      notificationSubscription.remove();
     };
   }, []);
 
@@ -114,6 +126,8 @@ async function registerForPushNotificationsAsync() {
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
       sound: 'samsung_ringtone',
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      bypassDnd: true,
     });
 
     // 2. Crystal Channel
@@ -123,6 +137,8 @@ async function registerForPushNotificationsAsync() {
       vibrationPattern: [0, 100, 50, 100],
       lightColor: '#00FFFF',
       sound: 'crystal_chime',
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      bypassDnd: true,
     });
 
     // 3. Classic Channel
@@ -132,6 +148,8 @@ async function registerForPushNotificationsAsync() {
       vibrationPattern: [0, 500, 100, 500],
       lightColor: '#FFD700',
       sound: 'classic_bell',
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      bypassDnd: true,
     });
 
     // 4. Modern Channel
@@ -141,6 +159,8 @@ async function registerForPushNotificationsAsync() {
       vibrationPattern: [0, 100, 100, 100, 100, 100, 500],
       lightColor: '#FF00FF',
       sound: 'modern_synth',
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      bypassDnd: true,
     });
   }
 

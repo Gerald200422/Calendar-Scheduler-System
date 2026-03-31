@@ -13,8 +13,8 @@ export default function RingtoneManager() {
 
     const handleMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === 'RING_ALARM') {
-        const { ringtone, title } = event.data
-        startAlarm(ringtone, title)
+        const { ringtone, title, duration } = event.data
+        startAlarm(ringtone, title, duration || 30)
       }
     }
 
@@ -22,7 +22,7 @@ export default function RingtoneManager() {
     return () => navigator.serviceWorker.removeEventListener('message', handleMessage)
   }, [])
 
-  const startAlarm = (ringtoneFile: string, title: string) => {
+  const startAlarm = (ringtoneFile: string, title: string, duration: number) => {
     if (audioRef.current) {
       audioRef.current.pause()
     }
@@ -34,10 +34,14 @@ export default function RingtoneManager() {
     
     audio.play().catch(err => {
       console.warn('Autoplay blocked. User interaction required to play alarm sound.', err)
-      // On some browsers, we might need a fallback UI to "Accept" the alarm
     })
     
     setIsPlaying(true)
+
+    // Auto-stop after duration
+    setTimeout(() => {
+      stopAlarm()
+    }, duration * 1000)
   }
 
   const stopAlarm = () => {

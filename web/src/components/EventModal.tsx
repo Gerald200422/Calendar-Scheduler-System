@@ -20,9 +20,10 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
   const [startTime, setStartTime] = useState('09:00')
   const [endDate, setEndDate] = useState('')
   const [endTime, setEndTime] = useState('10:00')
-  const [notificationType, setNotificationType] = useState('push')
+  const [notificationType, setNotificationType] = useState('both')
   const [notificationStyle, setNotificationStyle] = useState('default') // 'default' vs 'alarm'
   const [ringtoneOverride, setRingtoneOverride] = useState('')
+  const [ringtoneDuration, setRingtoneDuration] = useState(30)
   const [isSameDay, setIsSameDay] = useState(true)
   const [location, setLocation] = useState('')
   const [guestEmail, setGuestEmail] = useState('')
@@ -48,9 +49,10 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
       setEndTime(format(end, 'HH:mm'))
       
       setIsSameDay(format(start, 'yyyy-MM-dd') === format(end, 'yyyy-MM-dd'))
-      setNotificationType(initialEvent.notification_type || 'push')
-      setNotificationStyle(initialEvent.notification_style || 'push') // 'push' means default beep, 'alarm' means loud
+      setNotificationType(initialEvent.notification_type || 'both')
+      setNotificationStyle(initialEvent.notification_style || 'default') 
       setRingtoneOverride(initialEvent.ringtone_override || '')
+      setRingtoneDuration(initialEvent.ringtone_duration || 30)
       setLocation(initialEvent.location || '')
       setGuestEmail(initialEvent.guest_email || '')
     } else if (isOpen) {
@@ -59,7 +61,9 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
       setLocation('')
       setGuestEmail('')
       setRingtoneOverride('')
-      setNotificationStyle('push')
+      setNotificationStyle('default')
+      setRingtoneDuration(30)
+      setNotificationType('both')
       
       const startStr = format(selectedDate, 'yyyy-MM-dd')
       setStartDate(startStr)
@@ -87,7 +91,6 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
       setEndTime(endT)
       
       setIsSameDay(true)
-      setNotificationType('push')
     }
   }, [initialEvent, isOpen, selectedDate])
 
@@ -142,6 +145,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
       notificationType, 
       notification_style: notificationStyle,
       ringtone_override: ringtoneOverride,
+      ringtone_duration: ringtoneDuration,
     })
     onClose()
   }
@@ -285,18 +289,36 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               </div>
 
               {notificationStyle === 'alarm' && (
-                <div className="space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Select Ringtone</label>
-                  <select 
-                    className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all w-full text-sm appearance-none"
-                    value={ringtoneOverride}
-                    onChange={(e) => setRingtoneOverride(e.target.value)}
-                  >
-                    <option value="">Use Default Setting</option>
-                    {ringtones.map(rt => (
-                      <option key={rt.id} value={rt.id}>{rt.name}</option>
-                    ))}
-                  </select>
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Select Ringtone</label>
+                    <select 
+                      className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all w-full text-sm appearance-none"
+                      value={ringtoneOverride}
+                      onChange={(e) => setRingtoneOverride(e.target.value)}
+                    >
+                      <option value="">Use Default Setting</option>
+                      {ringtones.map(rt => (
+                        <option key={rt.id} value={rt.id}>{rt.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Ringtone Duration (Seconds)</label>
+                    <div className="flex items-center space-x-3">
+                      <input 
+                        type="range"
+                        min="5"
+                        max="300"
+                        step="5"
+                        className="flex-1 accent-pink-500"
+                        value={ringtoneDuration}
+                        onChange={(e) => setRingtoneDuration(parseInt(e.target.value))}
+                      />
+                      <span className="text-sm font-bold text-white w-12 text-right">{ringtoneDuration}s</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

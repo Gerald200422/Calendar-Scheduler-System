@@ -93,6 +93,8 @@ export default function Calendar({ userId }: CalendarProps) {
       end_time: eventData.endTime,
       notification_style: eventData.notification_style,
       ringtone_override: eventData.ringtone_override,
+      ringtone_duration: eventData.ringtone_duration,
+      notification_type: eventData.notificationType,
     }
 
     let result;
@@ -121,11 +123,17 @@ export default function Calendar({ userId }: CalendarProps) {
       // Create a "clean" now with 0 seconds and 0 milliseconds
       const cleanNow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), 0, 0)
       
-      const reminderTime = new Date(new Date(eventData.startTime).getTime() - 15 * 60 * 1000)
+      // ALARM style triggers EXACTLY at start time.
+      // DEFAULT style triggers 15 minutes before.
+      let triggerTime;
+      if (eventData.notification_style === 'alarm') {
+        triggerTime = new Date(eventData.startTime)
+      } else {
+        triggerTime = new Date(new Date(eventData.startTime).getTime() - 15 * 60 * 1000)
+      }
       
-      // If the reminder time is in the past (e.g. event starts in <15 mins), 
-      // schedule for immediately (cleanNow)
-      const scheduledFor = reminderTime < cleanNow ? cleanNow : reminderTime
+      // If the trigger time is in the past, schedule for immediately (cleanNow)
+      const scheduledFor = triggerTime < cleanNow ? cleanNow : triggerTime
       
       const { error: queueError } = await supabase.from('notification_queue').upsert([
         {

@@ -62,11 +62,13 @@ serve(async (req: Request) => {
       try {
         const { event, profile } = notif
         if (!event) throw new Error(`Event not found for notification ${notif.id}`)
-
-        const notificationType = profile?.notification_type || 'both'
+ 
+        // Priority: 1. Event Override, 2. Profile Choice, 3. Default
+        const notificationType = event.notification_type || profile?.notification_type || 'both'
+        const ringtoneDuration = event.ringtone_duration || 30
         const userEmail = profile?.email || 'gerald.p@gmail.com'
         const userName = profile?.full_name || 'there'
-
+ 
         const startTimeStr = new Date(event.start_time).toLocaleString('en-US', {
           timeZone: 'Asia/Manila',
           weekday: 'long',
@@ -76,10 +78,10 @@ serve(async (req: Request) => {
           minute: '2-digit',
           hour12: true
         })
-
+ 
         let sentEmail = false
         let sentPushCount = 0
-
+ 
         // 1. Send Email (via Resend)
         if (notificationType === 'email' || notificationType === 'both') {
           const emailHtml = `
@@ -99,7 +101,7 @@ serve(async (req: Request) => {
                   ${event.location ? `<p style="margin: 5px 0 0 0; color: #6b7280; font-size: 15px;"><span style="display: inline-block; margin-right: 8px;">📍</span> ${event.location}</p>` : ''}
                   ${event.description ? `<p style="margin: 15px 0 0 0; color: #374151; font-size: 15px; border-top: 1px solid #e5e7eb; padding-top: 15px;">${event.description}</p>` : ''}
                 </div>
-
+ 
                 <div style="text-align: center; margin-top: 35px;">
                   <a href="https://calendarschedulersystem.vercel.app/" style="background-color: #111827; color: #fff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block;">Open Calendar</a>
                 </div>
@@ -109,10 +111,10 @@ serve(async (req: Request) => {
               </div>
             </div>
           `
-
+ 
           const recipients = [userEmail];
           if (event.guest_email) recipients.push(event.guest_email);
-
+ 
           const { error: emailError } = await resend.emails.send({
             from: "Scheduler <notifications@resend.dev>",
             to: recipients,
@@ -122,7 +124,7 @@ serve(async (req: Request) => {
           if (emailError) throw emailError
           sentEmail = true
         }
-
+ 
         // 2. Send Push Notification (Mobile & Web)
         if (notificationType === 'mobile' || notificationType === 'push' || notificationType === 'both') {
           const { data: tokens } = await supabase.from('fcm_tokens').select('token, platform').eq('user_id', notif.user_id)
@@ -139,7 +141,7 @@ serve(async (req: Request) => {
                 }
               })
               .filter((sub: any) => sub !== null)
-
+ 
             // 2a. Expo (Mobile)
             if (expoTokens.length > 0) {
                 // Priority: 1. Event Override, 2. Profile Choice, 3. Default
@@ -150,7 +152,7 @@ serve(async (req: Request) => {
                   to: token,
                   title: `📅 ${event.title}`,
                   body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
-                  data: { event_id: event.id, ringtone },
+                  data: { event_id: event.id, ringtone, duration: ringtoneDuration, type: isAlarm ? 'ALARM' : 'NOTIFICATION' },
                   // Use 'default' sound if not alarm style
                   sound: isAlarm ? ringtone.replace('.mp3', '') : 'default',
                   // Use v4 channel for alarms, default for others
@@ -165,7 +167,7 @@ serve(async (req: Request) => {
               })
               sentPushCount += expoTokens.length
             }
-
+ 
             // 2b. Web Push (Laptop & PWA)
             if (webSubscriptions.length > 0) {
               // @ts-ignore
@@ -174,7 +176,7 @@ serve(async (req: Request) => {
               const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY') || 'g-uviKcDRN0LEUfdaulzTZ5EAvk3qGV5m4jqZZm_0_U'
               // Priority: 1. Event Override, 2. Profile Choice, 3. Default
               const ringtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
-
+ 
               // We'll use a dynamic import for web-push to handle ESM in Deno
               // @ts-ignore
               const webpush = await import("https://esm.sh/web-push@3.6.6")
@@ -184,7 +186,7 @@ serve(async (req: Request) => {
                 VAPID_PUBLIC,
                 VAPID_PRIVATE
               )
-
+ 
               for (const sub of webSubscriptions) {
                 try {
                   const payload = JSON.stringify({
@@ -192,7 +194,9 @@ serve(async (req: Request) => {
                     body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
                     data: { 
                       url: 'https://calendarschedulersystem.vercel.app/',
-                      ringtone 
+                      ringtone,
+                      duration: ringtoneDuration,
+                      isAlarm: event.notification_style === 'alarm'
                     },
                     actions: [
                       { action: 'stop', title: 'Stop Alarm 🛑' }
