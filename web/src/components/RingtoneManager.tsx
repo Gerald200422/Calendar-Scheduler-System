@@ -6,14 +6,17 @@ import { BellRing, VolumeX } from 'lucide-react'
 export default function RingtoneManager() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [alarmTitle, setAlarmTitle] = useState('')
+  const [isBlocked, setIsBlocked] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
-    if (!('serviceWorker' in navigator)) return
+    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return
 
     const handleMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === 'RING_ALARM') {
-        const { ringtone, title, duration } = event.data
+        const { ringtone, title, duration, isAlarm } = event.data
+        // We only show the loud overlay and ringtone if it's an alarm
+        // or has a custom ringtone override.
         startAlarm(ringtone, title, duration || 30)
       }
     }
@@ -32,16 +35,21 @@ export default function RingtoneManager() {
     audio.loop = true
     audioRef.current = audio
     
-    audio.play().catch(err => {
+    audio.play().then(() => {
+      setIsBlocked(false)
+    }).catch(err => {
       console.warn('Autoplay blocked. User interaction required to play alarm sound.', err)
+      setIsBlocked(true)
     })
     
     setIsPlaying(true)
 
     // Auto-stop after duration
-    setTimeout(() => {
-      stopAlarm()
-    }, duration * 1000)
+    if (duration > 0) {
+      setTimeout(() => {
+        stopAlarm()
+      }, duration * 1000)
+    }
   }
 
   const stopAlarm = () => {
@@ -50,6 +58,7 @@ export default function RingtoneManager() {
       audioRef.current = null
     }
     setIsPlaying(false)
+    setIsBlocked(false)
   }
 
   if (!isPlaying) return null
@@ -65,16 +74,18 @@ export default function RingtoneManager() {
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-black text-white tracking-tight uppercase">Event Starting!</h2>
+          <h2 className="text-2xl font-black text-white tracking-tight uppercase">
+            {isBlocked ? 'Click to Enable Sound' : 'Event Starting!'}
+          </h2>
           <p className="text-pink-400 font-bold text-lg">{alarmTitle}</p>
         </div>
 
         <button
-          onClick={stopAlarm}
+          onClick={isBlocked ? () => audioRef.current?.play().then(() => setIsBlocked(false)) : stopAlarm}
           className="w-full py-4 bg-white text-black hover:bg-zinc-200 transition-all font-black rounded-2xl flex items-center justify-center space-x-2 text-lg shadow-xl"
         >
-          <VolumeX size={24} />
-          <span>STOP ALARM</span>
+          {isBlocked ? <BellRing size={24} /> : <VolumeX size={24} />}
+          <span>{isBlocked ? 'PLAY ALARM SOUND' : 'STOP ALARM'}</span>
         </button>
       </div>
     </div>
