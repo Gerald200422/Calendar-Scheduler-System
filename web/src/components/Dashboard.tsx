@@ -65,7 +65,9 @@ export default function Dashboard({ userId }: DashboardProps) {
   }, [userId, fetchData])
 
   const nextEvent = upcomingEvents[0]
-  const todayActive = upcomingEvents.filter(e => isToday(parseISO(e.start_time)))
+  const todayEvents = [...upcomingEvents, ...historyEvents]
+    .filter(e => isToday(parseISO(e.start_time)))
+    .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
 
   const triggerSweep = async () => {
     try {
@@ -150,29 +152,40 @@ export default function Dashboard({ userId }: DashboardProps) {
             </div>
             
             <div className="space-y-4 md:space-y-5">
-              {todayActive.length > 0 ? todayActive.map(event => (
-                <div key={event.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group gap-4">
-                  <div className="flex items-center space-x-4 md:space-x-6">
-                    <div className="w-16 h-12 md:w-20 md:h-14 rounded-xl md:rounded-2xl bg-indigo-500/10 flex flex-col items-center justify-center text-indigo-400 font-black border border-indigo-500/20 text-[10px] md:text-xs">
-                      <div>{format(parseISO(event.start_time), 'HH:mm')}</div>
+              {todayEvents.length > 0 ? todayEvents.map(event => {
+                const hasEnded = new Date(event.end_time) < new Date()
+                return (
+                  <div key={event.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group gap-4 ${hasEnded ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center space-x-4 md:space-x-6">
+                      <div className={`w-16 h-12 md:w-20 md:h-14 rounded-xl md:rounded-2xl flex flex-col items-center justify-center font-black border text-[10px] md:text-xs ${hasEnded ? 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'}`}>
+                        <div>{format(parseISO(event.start_time), 'HH:mm')}</div>
+                      </div>
+                      <div>
+                        <h4 className={`text-md md:text-lg font-bold text-white group-hover:text-pink-400 transition-colors tracking-tight line-clamp-1 ${hasEnded ? 'line-through text-zinc-500' : ''}`}>
+                          {event.title}
+                        </h4>
+                        <p className="text-zinc-500 text-xs truncate max-w-[200px] md:max-w-[280px]">{event.description || 'No description'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-md md:text-lg font-bold text-white group-hover:text-pink-400 transition-colors tracking-tight line-clamp-1">{event.title}</h4>
-                      <p className="text-zinc-500 text-xs truncate max-w-[200px] md:max-w-[280px]">{event.description || 'No description'}</p>
+                    <div className="flex items-center justify-between sm:justify-end space-x-4">
+                      {hasEnded ? (
+                        <span className="text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest bg-zinc-700/30 text-zinc-500 border border-white/5">
+                          Ended
+                        </span>
+                      ) : (
+                        <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest ${
+                          event.notification_queue?.[0]?.status === 'sent' 
+                            ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                            : 'bg-zinc-500/10 text-zinc-400 border border-white/5'
+                        }`}>
+                          {event.notification_queue?.[0]?.status || 'pending'}
+                        </span>
+                      )}
+                      <ChevronRight size={18} className="text-zinc-700 group-hover:text-white transition-colors" />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between sm:justify-end space-x-4">
-                    <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest ${
-                      event.notification_queue?.[0]?.status === 'sent' 
-                        ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                        : 'bg-zinc-500/10 text-zinc-400 border border-white/5'
-                    }`}>
-                      {event.notification_queue?.[0]?.status || 'pending'}
-                    </span>
-                    <ChevronRight size={18} className="text-zinc-700 group-hover:text-white transition-colors" />
-                  </div>
-                </div>
-              )) : (
+                )
+              }) : (
                 <div className="text-center py-10 md:py-12 text-zinc-500 bg-white/[0.01] rounded-[1.5rem] md:rounded-[2rem] border border-dashed border-white/5">
                   <p className="text-md font-medium">No more scheduled for today.</p>
                 </div>

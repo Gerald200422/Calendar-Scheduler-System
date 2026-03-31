@@ -31,14 +31,17 @@ export default function RingtoneManager() {
     }
 
     setAlarmTitle(title)
-    const audio = new Audio(`/sounds/${ringtoneFile}`)
+    
+    // Ensure filename has extension
+    const fileName = ringtoneFile.endsWith('.mp3') ? ringtoneFile : `${ringtoneFile}.mp3`
+    const audio = new Audio(`/sounds/${fileName}`)
     audio.loop = true
     audioRef.current = audio
     
     audio.play().then(() => {
       setIsBlocked(false)
     }).catch(err => {
-      console.warn('Autoplay blocked. User interaction required to play alarm sound.', err)
+      console.warn('Autoplay blocked or playback error:', err)
       setIsBlocked(true)
     })
     

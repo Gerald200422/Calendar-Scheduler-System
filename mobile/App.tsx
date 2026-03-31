@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, Alert, Platform } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { StatusBar } from 'expo-status-bar';
@@ -18,6 +18,8 @@ Notifications.setNotificationHandler({
 export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [session, setSession] = useState<any>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // 1. Listen for Auth Changes
@@ -40,9 +42,9 @@ export default function App() {
 
     // 4. Handle incoming notifications (e.g. for auto-stop duration)
     const notificationSubscription = Notifications.addNotificationReceivedListener(notification => {
-      const { data } = notification.request.content;
-      if (data?.type === 'ALARM' && data?.duration) {
-        const durationMs = parseInt(data.duration) * 1000;
+      const data = notification.request.content.data;
+      if (data && data.type === 'ALARM' && data.duration) {
+        const durationMs = parseInt(data.duration as string) * 1000;
         setTimeout(() => {
           Notifications.dismissNotificationAsync(notification.request.identifier);
         }, durationMs);
@@ -54,6 +56,43 @@ export default function App() {
       notificationSubscription.remove();
     };
   }, []);
+
+  const fetchEvents = React.useCallback(async () => {
+    if (!session?.user) return;
+    setLoading(true);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const { data, error } = await supabase
+      .from('events')
+      .select('*, notification_queue(*)')
+      .eq('user_id', session.user.id)
+      .gte('start_time', today.toISOString())
+      .lt('start_time', tomorrow.toISOString())
+      .order('start_time', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching events:', error.message);
+    } else {
+      setEvents(data || []);
+    }
+    setLoading(false);
+  }, [session]);
+
+  useEffect(() => {
+    fetchEvents();
+    
+    const channel = supabase
+      .channel('mobile-events')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => fetchEvents())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchEvents]);
 
   const saveTokenToSupabase = async (token: string) => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -75,7 +114,7 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.title}>Scheduler Mobile</Text>
       
       {!session ? (
@@ -90,6 +129,43 @@ export default function App() {
           <Text style={styles.token}>{expoPushToken || 'Syncing...'}</Text>
         </View>
       )}
+
+      {session && (
+        <View style={styles.agendaContainer}>
+          <View style={styles.agendaHeader}>
+            <Text style={styles.agendaTitle}>Today's Agenda</Text>
+            <TouchableOpacity onPress={fetchEvents} disabled={loading}>
+              <Text style={styles.refreshText}>{loading ? '...' : 'Refresh'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {events.length > 0 ? events.map((event) => {
+            const hasEnded = new Date(event.end_time) < new Date();
+            const startStr = new Date(event.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+            
+            return (
+              <View key={event.id} style={[styles.eventCard, hasEnded && styles.eventCardEnded]}>
+                <View style={[styles.timeContainer, hasEnded && styles.timeContainerEnded]}>
+                  <Text style={[styles.timeText, hasEnded && styles.timeTextEnded]}>{startStr}</Text>
+                </View>
+                <View style={styles.eventInfo}>
+                  <Text style={[styles.eventTitle, hasEnded && styles.eventTitleEnded]}>{event.title}</Text>
+                  <Text style={styles.eventDesc} numberOfLines={1}>{event.description || 'No description'}</Text>
+                </View>
+                {hasEnded && (
+                  <View style={styles.endedBadge}>
+                    <Text style={styles.endedText}>DONE</Text>
+                  </View>
+                )}
+              </View>
+            );
+          }) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No events scheduled today.</Text>
+            </View>
+          )}
+        </View>
+      )}
       
       <View style={styles.buttonContainer}>
         <Button
@@ -100,8 +176,9 @@ export default function App() {
                 title: "Samsung Ringtone Test! 📱",
                 body: 'Checking if the custom sound is working...',
                 sound: 'samsung_ringtone',
+                // @ts-ignore: channelId exists in NotificationContentInput for Android
                 channelId: 'v4-samsung_ringtone',
-              },
+              } as any,
               trigger: {
                 type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
                 seconds: 1,
@@ -111,7 +188,7 @@ export default function App() {
         />
       </View>
       <StatusBar style="auto" />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -196,6 +273,11 @@ async function registerForPushNotificationsAsync() {
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    paddingVertical: 60,
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -204,20 +286,22 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '900',
     marginBottom: 40,
     color: '#000',
     letterSpacing: -1,
+    textAlign: 'center',
   },
   authContainer: {
     alignItems: 'center',
     backgroundColor: '#f9f9f9',
-    padding: 30,
-    borderRadius: 30,
+    padding: 25,
+    borderRadius: 25,
     width: '100%',
     borderWidth: 1,
     borderColor: '#eee',
+    marginBottom: 30,
   },
   prompt: {
     fontSize: 14,
@@ -229,7 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#10b981',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   tokenLabel: {
     fontSize: 10,
@@ -242,6 +326,107 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#bbb',
     textAlign: 'center',
+  },
+  agendaContainer: {
+    width: '100%',
+    marginTop: 10,
+  },
+  agendaHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 5,
+  },
+  agendaTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#000',
+  },
+  refreshText: {
+    fontSize: 12,
+    color: '#6366f1',
+    fontWeight: '700',
+  },
+  eventCard: {
+    flexDirection: 'row',
+    backgroundColor: '#f8fafc',
+    borderRadius: 20,
+    padding: 15,
+    marginBottom: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#f1f5f9',
+  },
+  eventCardEnded: {
+    opacity: 0.6,
+    backgroundColor: '#f1f5f9',
+  },
+  timeContainer: {
+    width: 55,
+    height: 40,
+    backgroundColor: '#6366f110',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#6366f120',
+  },
+  timeContainerEnded: {
+    backgroundColor: '#94a3b820',
+    borderColor: '#94a3b830',
+  },
+  timeText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#6366f1',
+  },
+  timeTextEnded: {
+    color: '#94a3b8',
+  },
+  eventInfo: {
+    flex: 1,
+    marginLeft: 15,
+    justifyContent: 'center',
+  },
+  eventTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1e293b',
+  },
+  eventTitleEnded: {
+    textDecorationLine: 'line-through',
+    color: '#94a3b8',
+  },
+  eventDesc: {
+    fontSize: 12,
+    color: '#64748b',
+    marginTop: 2,
+  },
+  endedBadge: {
+    backgroundColor: '#94a3b820',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  endedText: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: '#94a3b8',
+  },
+  emptyContainer: {
+    padding: 40,
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
+    borderRadius: 20,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#94a3b8',
+    fontWeight: '600',
   },
   buttonContainer: {
     marginTop: 40,

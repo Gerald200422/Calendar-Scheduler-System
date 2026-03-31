@@ -145,18 +145,19 @@ serve(async (req: Request) => {
             // 2a. Expo (Mobile)
             if (expoTokens.length > 0) {
                 // Priority: 1. Event Override, 2. Profile Choice, 3. Default
-                const ringtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
+                const baseRingtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
+                const ringtoneName = baseRingtone.replace('.mp3', '')
                 const isAlarm = event.notification_style === 'alarm'
                 
                 const pushData = expoTokens.map((token: string) => ({
                   to: token,
                   title: `📅 ${event.title}`,
                   body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
-                  data: { event_id: event.id, ringtone, duration: ringtoneDuration, type: isAlarm ? 'ALARM' : 'NOTIFICATION' },
+                  data: { event_id: event.id, ringtone: baseRingtone, duration: ringtoneDuration, type: isAlarm ? 'ALARM' : 'NOTIFICATION' },
                   // Use 'default' sound if not alarm style
-                  sound: isAlarm ? ringtone.replace('.mp3', '') : 'default',
+                  sound: isAlarm ? ringtoneName : 'default',
                   // Use v4 channel for alarms, default for others
-                  channelId: isAlarm ? `v4-${ringtone.replace('.mp3', '')}` : 'default',
+                  channelId: isAlarm ? `v4-${ringtoneName}` : 'default',
                   categoryIdentifier: isAlarm ? 'ALARM' : undefined,
                   priority: isAlarm ? 'high' : 'normal',
                 }))
@@ -175,8 +176,9 @@ serve(async (req: Request) => {
               // @ts-ignore
               const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY') || 'g-uviKcDRN0LEUfdaulzTZ5EAvk3qGV5m4jqZZm_0_U'
               // Priority: 1. Event Override, 2. Profile Choice, 3. Default
-              const ringtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
- 
+              const rawRingtone = event.ringtone_override || profile?.ringtone_choice || 'samsung_ringtone.mp3'
+              const ringtoneFile = rawRingtone.endsWith('.mp3') ? rawRingtone : `${rawRingtone}.mp3`
+
               // We'll use a dynamic import for web-push to handle ESM in Deno
               // @ts-ignore
               const webpush = await import("https://esm.sh/web-push@3.6.6")
@@ -194,7 +196,7 @@ serve(async (req: Request) => {
                     body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
                     data: { 
                       url: 'https://calendarschedulersystem.vercel.app/',
-                      ringtone,
+                      ringtone: ringtoneFile,
                       duration: ringtoneDuration,
                       isAlarm: event.notification_style === 'alarm'
                     },
