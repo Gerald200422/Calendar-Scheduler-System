@@ -155,14 +155,14 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-sm">
+      <div className="bg-white border border-zinc-200 w-full max-w-lg rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-pink-500/10 to-violet-500/10">
-          <h3 className="text-xl font-semibold text-white">
+        <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
+          <h3 className="text-xl font-bold text-zinc-900">
             {initialEvent ? 'Edit Event' : 'Create New Event'}
           </h3>
-          <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-900 transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -170,36 +170,36 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
         {/* Body */}
         <div className="p-6 space-y-6">
           <div className="space-y-6">
-            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-500 transition-colors">
+            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
               <Type size={18} />
               <input 
                 type="text" 
                 placeholder="Event Title" 
-                className="bg-transparent border-none outline-none text-white w-full text-lg font-medium placeholder:text-zinc-600"
+                className="bg-transparent border-none outline-none text-zinc-900 w-full text-lg font-bold placeholder:text-zinc-300"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
             {/* Location Field */}
-            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-500 transition-colors">
+            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
               <CalendarIcon size={18} className="opacity-50" />
               <input 
                 type="text" 
                 placeholder="Add Location" 
-                className="bg-transparent border-none outline-none text-white w-full text-sm placeholder:text-zinc-600"
+                className="bg-transparent border-none outline-none text-zinc-600 w-full text-sm placeholder:text-zinc-300"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
             </div>
 
             {/* Guest Email Field */}
-            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-500 transition-colors">
+            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
               <Bell size={18} className="opacity-50" />
               <input 
                 type="email" 
                 placeholder="Guest Email (Optional)" 
-                className="bg-transparent border-none outline-none text-white w-full text-sm placeholder:text-zinc-600"
+                className="bg-transparent border-none outline-none text-zinc-600 w-full text-sm placeholder:text-zinc-300"
                 value={guestEmail}
                 onChange={(e) => setGuestEmail(e.target.value)}
               />
@@ -213,13 +213,13 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <div className="grid grid-cols-2 gap-3">
                 <input 
                   type="date" 
-                  className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-2.5 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all text-sm"
+                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
                 <input 
                   type="time" 
-                  className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-2.5 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all text-sm"
+                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                 />
@@ -244,14 +244,14 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                 {!isSameDay && (
                   <input 
                     type="date" 
-                    className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-2.5 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all text-sm"
+                    className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
                 )}
                 <input 
                   type="time" 
-                  className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-2.5 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all text-sm"
+                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                   style={{ gridColumn: isSameDay ? 'span 2' : 'span 1' }}
@@ -261,13 +261,13 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
 
             {/* Duration and Notification */}
             <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 px-4 py-3 rounded-xl bg-pink-500/5 border border-pink-500/10 flex items-center justify-between">
-                <span className="text-xs font-bold text-pink-300 tracking-wide uppercase">Duration</span>
-                <span className="text-sm font-medium text-white">{durationText}</span>
+              <div className="flex-1 px-4 py-3 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-between">
+                <span className="text-xs font-bold text-pink-600 tracking-wide uppercase">Duration</span>
+                <span className="text-sm font-bold text-pink-900">{durationText}</span>
               </div>
               <div className="flex-1">
                 <select 
-                  className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all w-full text-sm appearance-none"
+                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
                   value={notificationType}
                   onChange={(e) => setNotificationType(e.target.value)}
                 >
@@ -283,7 +283,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Alert Style</label>
                 <select 
-                  className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all w-full text-sm appearance-none"
+                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
                   value={notificationStyle}
                   onChange={(e) => setNotificationStyle(e.target.value)}
                 >
@@ -297,7 +297,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Select Ringtone</label>
                     <select 
-                      className="bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-pink-500 transition-all w-full text-sm appearance-none"
+                      className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
                       value={ringtoneOverride}
                       onChange={(e) => setRingtoneOverride(e.target.value)}
                     >
@@ -320,7 +320,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                         value={ringtoneDuration}
                         onChange={(e) => setRingtoneDuration(parseInt(e.target.value))}
                       />
-                      <span className="text-sm font-bold text-white w-12 text-right">{ringtoneDuration}s</span>
+                      <span className="text-sm font-bold text-zinc-900 w-12 text-right">{ringtoneDuration}s</span>
                     </div>
                   </div>
                 </div>
@@ -328,26 +328,26 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
             </div>
 
             {/* Status Section - Simplified to Toggle */}
-            <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-2">
-              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Active Status</label>
+            <div className="flex items-center justify-between pt-2 border-t border-zinc-100 mt-2">
+              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-1">Active Status</label>
               <button 
                 onClick={() => setStatus(status === 'deleted' ? 'upcoming' : 'deleted')}
                 className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
                   status === 'deleted' 
-                    ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
-                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                    ? 'bg-red-50 text-red-600 border-red-200 shadow-sm'
+                    : 'bg-zinc-50 text-zinc-600 border-zinc-200 shadow-sm'
                 }`}
               >
                 {status === 'deleted' ? 'Soft Deleted' : 'Normal'}
               </button>
             </div>
 
-            <div className="flex items-start space-x-3 text-zinc-400 focus-within:text-pink-500 transition-colors pt-2">
+            <div className="flex items-start space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors pt-2">
               <AlignLeft size={18} className="mt-1" />
               <textarea 
                 placeholder="Add Notes & Details" 
                 rows={2}
-                className="bg-transparent border-none outline-none text-white w-full text-sm placeholder:text-zinc-600 resize-none"
+                className="bg-transparent border-none outline-none text-zinc-600 w-full text-sm placeholder:text-zinc-300 resize-none"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -356,7 +356,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-white/5 flex justify-between items-center">
+        <div className="px-6 py-4 bg-zinc-50 border-t border-zinc-100 flex justify-between items-center">
           <div>
             {initialEvent && onDelete && (
               <button 
@@ -364,7 +364,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                   onDelete(initialEvent.id)
                   onClose()
                 }}
-                className="flex items-center text-red-500 hover:text-red-400 text-sm font-medium transition-colors"
+                className="flex items-center text-red-500 hover:text-red-700 text-sm font-bold transition-colors"
               >
                 <Trash2 size={16} className="mr-1" /> Remove
               </button>
@@ -373,13 +373,13 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
           <div className="flex space-x-3">
             <button 
               onClick={onClose}
-              className="px-4 py-2 text-zinc-400 hover:text-white font-medium transition-colors"
+              className="px-4 py-2 text-zinc-500 hover:text-zinc-900 font-bold transition-colors"
             >
               Discard
             </button>
             <button 
               onClick={handleSave}
-              className="px-8 py-2.5 bg-gradient-to-r from-pink-500 to-violet-500 rounded-xl font-bold text-white hover:opacity-90 transition-all shadow-lg hover:shadow-pink-500/25 active:scale-95"
+              className="px-8 py-2.5 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-all shadow-[0_10px_20px_-5px_rgba(0,0,0,0.2)] active:scale-95"
             >
               {initialEvent ? 'Update' : 'Confirm'}
             </button>

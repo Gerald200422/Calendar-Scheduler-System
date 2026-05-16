@@ -61,17 +61,17 @@ export default function PushManager({ userId }: { userId: string }) {
 
   return (
     <div className="fixed bottom-24 md:bottom-12 right-6 md:right-12 z-50 animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-[2rem] shadow-2xl max-w-sm flex flex-col items-center text-center">
-        <div className="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center mb-4">
+      <div className="bg-white border border-zinc-200 p-6 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] max-w-sm flex flex-col items-center text-center">
+        <div className="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center mb-4 border border-pink-100">
           <Bell size={24} className="text-pink-500 animate-bounce" />
         </div>
-        <h3 className="text-lg font-bold text-white mb-2">Enable Laptop Alerts</h3>
-        <p className="text-zinc-400 text-xs mb-6 leading-relaxed">
+        <h3 className="text-lg font-bold text-zinc-900 mb-2">Enable Laptop Alerts</h3>
+        <p className="text-zinc-500 text-xs mb-6 leading-relaxed">
           Stay on top of your schedule with real-time browser notifications even when the tab is closed.
         </p>
         
         {error && (
-          <div className="flex items-center space-x-2 text-red-400 text-[10px] font-bold mb-4 uppercase tracking-widest">
+          <div className="flex items-center space-x-2 text-red-500 text-[10px] font-bold mb-4 uppercase tracking-widest">
             <XCircle size={14} />
             <span>{error}</span>
           </div>
@@ -80,7 +80,7 @@ export default function PushManager({ userId }: { userId: string }) {
         <button
           onClick={subscribeToPush}
           disabled={loading}
-          className="w-full py-3.5 bg-gradient-to-r from-pink-600 to-violet-600 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] hover:scale-[1.03] active:scale-[0.97] transition-all disabled:opacity-50 flex items-center justify-center"
+          className="w-full py-3.5 bg-zinc-900 text-white rounded-xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 hover:scale-[1.03] active:scale-[0.97] transition-all disabled:opacity-50 flex items-center justify-center shadow-lg"
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

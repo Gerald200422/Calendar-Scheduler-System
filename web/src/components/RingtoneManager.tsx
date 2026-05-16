@@ -74,28 +74,28 @@ export default function RingtoneManager() {
   if (!isPlaying) return null
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-[#1a1a1a] border border-pink-500/30 p-8 rounded-[2.5rem] shadow-[0_0_50px_rgba(236,72,153,0.3)] max-w-sm w-full text-center space-y-6">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-900/40 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-white border border-zinc-200 p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] max-w-sm w-full text-center space-y-6">
         <div className="relative inline-block">
-          <div className="absolute inset-0 bg-pink-500 blur-2xl opacity-20 animate-pulse" />
-          <div className="relative bg-gradient-to-br from-pink-500 to-violet-500 p-5 rounded-full inline-block animate-bounce">
+          <div className="absolute inset-0 bg-pink-500 blur-2xl opacity-10 animate-pulse" />
+          <div className="relative bg-gradient-to-br from-pink-500 to-violet-500 p-5 rounded-full inline-block animate-bounce shadow-lg">
             <BellRing size={40} className="text-white" />
           </div>
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-black text-white tracking-tight uppercase">
-            {isBlocked ? 'Click to Enable Sound' : 'Event Starting!'}
+          <h2 className="text-2xl font-black text-zinc-900 tracking-tight uppercase">
+            {isBlocked ? 'Enable Sound' : 'Event Starting!'}
           </h2>
-          <p className="text-pink-400 font-bold text-lg">{alarmTitle}</p>
+          <p className="text-pink-600 font-bold text-lg">{alarmTitle}</p>
         </div>
 
         <button
           onClick={isBlocked ? () => audioRef.current?.play().then(() => setIsBlocked(false)) : stopAlarm}
-          className="w-full py-4 bg-white text-black hover:bg-zinc-200 transition-all font-black rounded-2xl flex items-center justify-center space-x-2 text-lg shadow-xl"
+          className="w-full py-4 bg-zinc-900 text-white hover:bg-zinc-800 transition-all font-black rounded-2xl flex items-center justify-center space-x-2 text-lg shadow-xl hover:scale-[1.02] active:scale-[0.98]"
         >
           {isBlocked ? <BellRing size={24} /> : <VolumeX size={24} />}
-          <span>{isBlocked ? 'PLAY ALARM SOUND' : 'STOP ALARM'}</span>
+          <span>{isBlocked ? 'PLAY ALARM' : 'STOP ALARM'}</span>
         </button>
       </div>
     </div>

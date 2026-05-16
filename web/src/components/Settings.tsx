@@ -123,9 +123,10 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 md:p-10 bg-white/[0.03] backdrop-blur-[40px] rounded-[1.5rem] md:rounded-[2.5rem] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] text-white">
+  return (
+    <div className="w-full max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900">
       <div className="mb-8 md:mb-12 text-center md:text-left">
-        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">User Preferences</h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-500 bg-clip-text text-transparent">User Preferences</h2>
         <p className="text-zinc-500 mt-2 font-medium text-sm md:text-base">Personalize your experience and alert delivery system.</p>
       </div>
 
@@ -141,7 +142,7 @@ export default function Settings({ userId }: SettingsProps) {
               type="text" 
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-white text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/50 transition-all"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-zinc-900 text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all shadow-sm"
               placeholder="Your full name"
             />
           </section>
@@ -155,7 +156,7 @@ export default function Settings({ userId }: SettingsProps) {
               type="email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-white text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/50 transition-all"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-zinc-900 text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all shadow-sm"
               placeholder="backup@email.com"
             />
           </section>
@@ -178,8 +179,8 @@ export default function Settings({ userId }: SettingsProps) {
                 onClick={() => setNotificationType(item.id)}
                 className={`group flex flex-row sm:flex-col items-center justify-center p-4 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 gap-4 sm:gap-2 ${
                   notificationType === item.id 
-                    ? 'bg-pink-500/10 border-pink-500 text-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.2)]' 
-                    : 'bg-white/[0.02] border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300'
+                    ? 'bg-pink-50 border-pink-500 text-pink-600 shadow-[0_10px_20px_-5px_rgba(236,72,153,0.15)]' 
+                    : 'bg-zinc-50 border-zinc-100 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-100/50'
                 }`}
               >
                 <item.icon size={24} className={`sm:mb-1 transition-transform group-hover:scale-110`} />
@@ -202,8 +203,8 @@ export default function Settings({ userId }: SettingsProps) {
                   onClick={() => setRingtone(rt.id)}
                   className={`w-full flex items-center justify-between px-5 md:px-6 py-4 md:py-5 rounded-xl md:rounded-2xl border-2 transition-all duration-300 ${
                     ringtone === rt.id 
-                      ? 'bg-violet-500/10 border-violet-500 text-violet-500 shadow-[0_0_20px_rgba(139,92,246,0.2)]' 
-                      : 'bg-white/[0.02] border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300'
+                      ? 'bg-violet-50 border-violet-500 text-violet-600 shadow-[0_10px_20px_-5px_rgba(139,92,246,0.15)]' 
+                      : 'bg-zinc-50 border-zinc-100 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-100/50'
                   }`}
                 >
                   <div className="flex flex-col items-start text-left">
@@ -220,7 +221,7 @@ export default function Settings({ userId }: SettingsProps) {
                     playPreview(rt)
                   }}
                   disabled={loadingId === rt.id}
-                  className={`absolute right-12 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white/5 hover:bg-violet-500/20 text-zinc-400 hover:text-white transition-all ${playingId === rt.id ? 'text-violet-400 bg-violet-500/10' : ''}`}
+                  className={`absolute right-12 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white border border-zinc-200 shadow-sm hover:bg-zinc-50 text-zinc-400 hover:text-zinc-900 transition-all ${playingId === rt.id ? 'text-violet-600 bg-violet-50 border-violet-200' : ''}`}
                 >
                   {loadingId === rt.id ? (
                     <Loader2 size={16} className="animate-spin" />
@@ -237,7 +238,7 @@ export default function Settings({ userId }: SettingsProps) {
         </section>
 
         {/* Save/Status */}
-        <div className="pt-8 md:pt-10 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="pt-8 md:pt-10 border-t border-zinc-100 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className={`text-xs md:text-sm font-medium ${message.includes('Error') ? 'text-red-400' : 'text-emerald-400'}`}>
             {message}
           </p>

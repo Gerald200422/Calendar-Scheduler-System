@@ -167,7 +167,8 @@ export default function Calendar({ userId }: CalendarProps) {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 bg-white/5 backdrop-blur-2xl rounded-[1.5rem] md:rounded-[2.5rem] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] text-white">
+  return (
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 gap-6">
         <div>
@@ -177,16 +178,16 @@ export default function Calendar({ userId }: CalendarProps) {
           <p className="text-zinc-500 text-xs md:text-sm mt-2 font-medium">Smart scheduling for a modern lifestyle.</p>
         </div>
         <div className="flex items-center space-x-3 w-full md:w-auto">
-          <div className="flex rounded-xl md:rounded-2xl bg-white/5 p-1 border border-white/5">
+          <div className="flex rounded-xl md:rounded-2xl bg-zinc-100 p-1 border border-zinc-200">
             <button 
               onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-              className="p-2 md:p-2.5 hover:bg-white/10 rounded-lg md:rounded-xl transition-all"
+              className="p-2 md:p-2.5 hover:bg-white rounded-lg md:rounded-xl transition-all shadow-sm text-zinc-600 hover:text-zinc-900"
             >
               <ChevronLeft size={18} />
             </button>
             <button 
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-              className="p-2 md:p-2.5 hover:bg-white/10 rounded-lg md:rounded-xl transition-all"
+              className="p-2 md:p-2.5 hover:bg-white rounded-lg md:rounded-xl transition-all shadow-sm text-zinc-600 hover:text-zinc-900"
             >
               <ChevronRight size={18} />
             </button>
@@ -232,15 +233,15 @@ export default function Calendar({ userId }: CalendarProps) {
               onClick={() => handleOpenModal(day)}
               className={cn(
                 "min-h-[80px] md:min-h-[140px] p-2 md:p-4 cursor-pointer transition-all rounded-xl md:rounded-3xl relative group border",
-                !isCurrentMonth ? "opacity-20 border-transparent pointer-events-none" : "hover:bg-white/5 bg-white/[0.02]",
-                isSelected ? "border-white/20 bg-white/10 shadow-inner" : "border-white/5",
-                isToday && "ring-2 ring-pink-500/50 border-pink-500/20"
+                !isCurrentMonth ? "opacity-20 border-transparent pointer-events-none" : "hover:bg-zinc-50 bg-white",
+                isSelected ? "border-pink-500/30 bg-pink-50/30 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]" : "border-zinc-100 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-1px_rgba(0,0,0,0.03)]",
+                isToday && "ring-2 ring-pink-500/20 border-pink-500/50 shadow-[0_10px_20px_-5px_rgba(236,72,153,0.1)]"
               )}
             >
               <div className="flex justify-between items-start mb-1 md:mb-2">
                 <span className={cn(
                   "text-sm md:text-lg font-bold tracking-tight",
-                  isToday ? "text-pink-500" : "text-white/70"
+                  isToday ? "text-pink-600" : "text-zinc-400 group-hover:text-zinc-900 transition-colors"
                 )}>
                   {format(day, 'd')}
                 </span>
