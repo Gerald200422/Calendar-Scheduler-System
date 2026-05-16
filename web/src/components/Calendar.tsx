@@ -118,38 +118,84 @@ export default function Calendar({ userId }: CalendarProps) {
     if (error) {
       alert('Error saving event: ' + error.message)
     } else if (data && data[0]) {
-      // Create/Update notification queue entry if needed
+      const eventId = data[0].id
+      
+      // 1. Clear existing pending notifications for this event
+      await supabase
+        .from('notification_queue')
+        .delete()
+        .eq('event_id', eventId)
+        .eq('status', 'pending')
+
+      // 2. Prepare notification stages
       const now = new Date()
-      // Create a "clean" now with 0 seconds and 0 milliseconds
       const cleanNow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), 0, 0)
       
-      // ALARM style triggers EXACTLY at start time.
-      // DEFAULT style triggers 15 minutes before.
-      let triggerTime;
-      if (eventData.notification_style === 'alarm') {
-        triggerTime = new Date(eventData.startTime)
-      } else {
-        triggerTime = new Date(new Date(eventData.startTime).getTime() - 15 * 60 * 1000)
-      }
-      
-      // If the trigger time is in the past, schedule for immediately (cleanNow)
-      const scheduledFor = triggerTime < cleanNow ? cleanNow : triggerTime
-      
-      const { error: queueError } = await supabase.from('notification_queue').upsert([
-        {
-          event_id: data[0].id,
+      const startTime = new Date(eventData.startTime)
+      const endTime = new Date(eventData.endTime)
+      const reminderTime = new Date(startTime.getTime() - 15 * 60 * 1000)
+
+      const notifications = []
+
+      // Reminder (only if not alarm style and more than 15 mins away)
+      if (eventData.notification_style !== 'alarm' && reminderTime > cleanNow) {
+        notifications.push({
+          event_id: eventId,
           user_id: userId,
-          scheduled_for: scheduledFor.toISOString(),
+          scheduled_for: reminderTime.toISOString(),
           status: 'pending'
-        }
-      ], { onConflict: 'event_id' })
-      
-      if (queueError) {
-        console.error('Error scheduling notification:', queueError.message)
-        alert('Event saved, but failed to schedule notification: ' + queueError.message)
+        })
       }
 
+      // Start Alert
+      if (startTime > cleanNow) {
+        notifications.push({
+          event_id: eventId,
+          user_id: userId,
+          scheduled_for: startTime.toISOString(),
+          status: 'pending'
+        })
+      } else {
+        // If already started, schedule immediate alert if it was just created
+        notifications.push({
+          event_id: eventId,
+          user_id: userId,
+          scheduled_for: cleanNow.toISOString(),
+          status: 'pending'
+        })
+      }
+
+      // End Alert
+      if (endTime > cleanNow) {
+        notifications.push({
+          event_id: eventId,
+          user_id: userId,
+          scheduled_for: endTime.toISOString(),
+          status: 'pending'
+        })
+      }
+
+      // 3. Bulk insert notifications
+      const { error: queueError } = await supabase
+        .from('notification_queue')
+        .insert(notifications)
+      
+      if (queueError) {
+        console.error('Error scheduling notifications:', queueError.message)
+        // If bulk insert fails (possibly due to unique constraint on event_id), 
+        // fall back to single notification (Start time)
+        if (queueError.message.includes('unique')) {
+           await supabase.from('notification_queue').upsert({
+             event_id: eventId,
+             user_id: userId,
+             scheduled_for: startTime > cleanNow ? startTime.toISOString() : cleanNow.toISOString(),
+             status: 'pending'
+           }, { onConflict: 'event_id' })
+        }
+      }
+      
       fetchEvents()
+      handleCloseModal()
     }
   }
 

@@ -149,12 +149,33 @@ serve(async (req: Request) => {
                 const ringtoneName = baseRingtone.replace('.mp3', '')
                 const isAlarm = event.notification_style === 'alarm'
                 
+                const schedTime = new Date(notif.scheduled_for).getTime()
+                const startTime = new Date(event.start_time).getTime()
+                const endTime = new Date(event.end_time).getTime()
+                
+                const isEndNotif = Math.abs(schedTime - endTime) < 60000
+                const isStartNotif = Math.abs(schedTime - startTime) < 60000
+                const isReminder = schedTime < startTime && !isStartNotif
+
+                let pushTitle = `📅 ${event.title}`
+                let pushBody = `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`
+
+                if (isEndNotif) {
+                  pushTitle = `🏁 Event Ended: ${event.title}`
+                  pushBody = `Hope it went well! Your schedule is now clear.`
+                } else if (isReminder) {
+                  pushTitle = `🔔 Reminder: ${event.title}`
+                  pushBody = `Starting in 15 minutes! Get ready.`
+                } else if (isStartNotif) {
+                  pushTitle = `🚀 Starting Now: ${event.title}`
+                  pushBody = `Your event is beginning. ${event.location ? `📍 ${event.location}` : ''}`
+                }
+                
                 const pushData = expoTokens.map((token: string) => ({
                   to: token,
-                  title: `📅 ${event.title}`,
-                  body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
+                  title: pushTitle,
+                  body: pushBody,
                   data: { event_id: event.id, ringtone: baseRingtone, duration: ringtoneDuration, type: isAlarm ? 'ALARM' : 'NOTIFICATION' },
-                  // Always use the custom sound and channel for notifications
                   sound: baseRingtone,
                   channelId: `v4-${ringtoneName}`,
                   categoryIdentifier: isAlarm ? 'ALARM' : undefined,
@@ -190,9 +211,31 @@ serve(async (req: Request) => {
  
               for (const sub of webSubscriptions) {
                 try {
+                  const schedTime = new Date(notif.scheduled_for).getTime()
+                  const startTime = new Date(event.start_time).getTime()
+                  const endTime = new Date(event.end_time).getTime()
+                  
+                  const isEndNotif = Math.abs(schedTime - endTime) < 60000
+                  const isStartNotif = Math.abs(schedTime - startTime) < 60000
+                  const isReminder = schedTime < startTime && !isStartNotif
+
+                  let pushTitle = `📅 ${event.title}`
+                  let pushBody = `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`
+
+                  if (isEndNotif) {
+                    pushTitle = `🏁 Event Ended: ${event.title}`
+                    pushBody = `Hope it went well! Your schedule is now clear.`
+                  } else if (isReminder) {
+                    pushTitle = `🔔 Reminder: ${event.title}`
+                    pushBody = `Starting in 15 minutes! Get ready.`
+                  } else if (isStartNotif) {
+                    pushTitle = `🚀 Starting Now: ${event.title}`
+                    pushBody = `Your event is beginning. ${event.location ? `📍 ${event.location}` : ''}`
+                  }
+
                   const payload = JSON.stringify({
-                    title: `📅 ${event.title}`,
-                    body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
+                    title: pushTitle,
+                    body: pushBody,
                     data: { 
                       url: 'https://calendarschedulersystem.vercel.app/',
                       ringtone: ringtoneFile,
