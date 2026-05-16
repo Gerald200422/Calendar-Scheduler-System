@@ -10,11 +10,12 @@ import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('calendar')
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [session, setSession] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   const [pstTime, setPstTime] = useState('')
+  const [showNotifications, setShowNotifications] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -120,12 +121,40 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex items-center space-x-6 border-l border-zinc-200 dark:border-zinc-800 pl-8">
-              <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
+            <div className="flex items-center space-x-6 border-l border-zinc-200 dark:border-zinc-800 pl-8 relative">
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={cn(
+                  "text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors relative",
+                  showNotifications && "text-violet-600 dark:text-violet-400"
+                )}
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+                {/* Notification dot (optional) */}
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-zinc-900" />
               </button>
 
-              <div className="flex items-center space-x-3 group cursor-pointer border-l border-zinc-200 dark:border-zinc-800 pl-6 py-2">
+              {showNotifications && (
+                <div className="absolute top-full right-0 mt-4 w-80 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden z-[110] animate-in slide-in-from-top-2 duration-200">
+                  <div className="p-6 border-b border-zinc-100 dark:border-zinc-800">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-zinc-900 dark:text-white">Notifications</h3>
+                  </div>
+                  <div className="p-10 flex flex-col items-center justify-center text-center space-y-4">
+                    <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-800/50 rounded-full flex items-center justify-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-300 dark:text-zinc-700"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21 a1.94 1.94 0 0 0 3.4 0"></path></svg>
+                    </div>
+                    <div>
+                      <p className="text-zinc-900 dark:text-white font-bold">No notifications yet</p>
+                      <p className="text-zinc-400 text-xs mt-1">We'll notify you when your events are about to start.</p>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-zinc-50 dark:bg-zinc-800/30 text-center">
+                    <button className="text-[10px] font-black uppercase tracking-widest text-violet-600 dark:text-violet-400 hover:opacity-80 transition-opacity">View All History</button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center space-x-3 group cursor-pointer border-l border-zinc-200 dark:border-zinc-800 pl-6 py-2">
                 <div className="flex flex-col items-end">
                   <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{session.user.email}</p>
                   <button onClick={handleSignOut} className="text-[10px] font-black text-zinc-400 hover:text-red-500 uppercase tracking-widest">Sign Out</button>
