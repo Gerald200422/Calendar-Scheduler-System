@@ -168,7 +168,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800 scrollbar-track-transparent">
           <div className="space-y-6">
             <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
               <Type size={18} />
