@@ -85,7 +85,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pb-24 md:pb-12 transition-colors">
+    <main className="flex min-h-screen flex-col items-center justify-start bg-zinc-100 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pb-24 md:pb-12 transition-colors">
       {/* Header (Matching Image) */}
       <div className="w-full bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 shadow-sm sticky top-0 z-[100] transition-colors">
         <header className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">

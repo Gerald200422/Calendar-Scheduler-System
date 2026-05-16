@@ -94,7 +94,7 @@ export default function Dashboard({ userId }: DashboardProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <div className="lg:col-span-8 space-y-10">
           {/* Main Highlight: Next Up (Matching Image) */}
-          <div className="relative overflow-hidden p-10 md:p-14 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] group transition-colors">
+          <div className="relative overflow-hidden p-10 md:p-14 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.12)] dark:shadow-none group transition-all duration-500">
             <div className="absolute top-0 right-0 p-10 opacity-[0.03] dark:opacity-[0.05] group-hover:rotate-6 transition-transform duration-700 hidden sm:block">
               <Bell size={240} className="text-zinc-900 dark:text-white" />
             </div>
@@ -150,7 +150,7 @@ export default function Dashboard({ userId }: DashboardProps) {
           </div>
 
           {/* Today's Agenda list (Matching Image) */}
-          <div className="p-10 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] transition-colors">
+          <div className="p-10 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-500">
             <div className="flex items-center justify-between mb-12">
               <h3 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center">
                 <div className="p-2 bg-violet-50 dark:bg-violet-900/20 rounded-xl mr-4 border border-violet-100 dark:border-violet-800">
@@ -160,7 +160,7 @@ export default function Dashboard({ userId }: DashboardProps) {
               </h3>
               <button 
                 onClick={triggerSweep}
-                className="flex items-center justify-center px-6 py-3 bg-zinc-800 dark:bg-zinc-100 hover:bg-zinc-900 dark:hover:bg-white rounded-xl text-[10px] font-black uppercase tracking-widest text-white dark:text-zinc-900 transition-all shadow-lg group active:scale-95"
+                className="flex items-center justify-center px-6 py-3 bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white rounded-xl text-[10px] font-black uppercase tracking-widest text-white dark:text-zinc-900 transition-all shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] dark:shadow-none group active:scale-95"
               >
                 <Bell size={14} className="mr-3" /> Trigger Sweep
               </button>
@@ -199,7 +199,7 @@ export default function Dashboard({ userId }: DashboardProps) {
 
         {/* Sidebar: Looking Ahead (Matching Image) */}
         <div className="lg:col-span-4 space-y-10">
-          <div className="p-10 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] min-h-[600px] transition-colors">
+          <div className="p-10 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-none min-h-[600px] transition-all duration-500">
             <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-12">Looking Ahead</h3>
             <div className="space-y-12">
               {upcomingEvents.slice(0, 5).map((event) => (
@@ -244,7 +244,7 @@ export default function Dashboard({ userId }: DashboardProps) {
           </div>
 
           {/* Pro Tip Card (Matching Image) */}
-          <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden group transition-colors">
+          <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-none overflow-hidden group transition-all duration-500">
             <div className="relative h-56 overflow-hidden">
               <img 
                 src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=2000" 
