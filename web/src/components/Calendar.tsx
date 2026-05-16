@@ -167,7 +167,7 @@ export default function Calendar({ userId }: CalendarProps) {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900">
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 bg-white dark:bg-zinc-900 rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900 dark:text-zinc-100 transition-colors">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 gap-6">
         <div>
@@ -177,16 +177,16 @@ export default function Calendar({ userId }: CalendarProps) {
           <p className="text-zinc-500 text-xs md:text-sm mt-2 font-medium">Smart scheduling for a modern lifestyle.</p>
         </div>
         <div className="flex items-center space-x-3 w-full md:w-auto">
-          <div className="flex rounded-xl md:rounded-2xl bg-zinc-100 p-1 border border-zinc-200">
+          <div className="flex rounded-xl md:rounded-2xl bg-zinc-100 dark:bg-zinc-800 p-1 border border-zinc-200 dark:border-zinc-700">
             <button 
               onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-              className="p-2 md:p-2.5 hover:bg-white rounded-lg md:rounded-xl transition-all shadow-sm text-zinc-600 hover:text-zinc-900"
+              className="p-2 md:p-2.5 hover:bg-white dark:hover:bg-zinc-700 rounded-lg md:rounded-xl transition-all shadow-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             >
               <ChevronLeft size={18} />
             </button>
             <button 
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-              className="p-2 md:p-2.5 hover:bg-white rounded-lg md:rounded-xl transition-all shadow-sm text-zinc-600 hover:text-zinc-900"
+              className="p-2 md:p-2.5 hover:bg-white dark:hover:bg-zinc-700 rounded-lg md:rounded-xl transition-all shadow-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             >
               <ChevronRight size={18} />
             </button>
@@ -232,15 +232,15 @@ export default function Calendar({ userId }: CalendarProps) {
               onClick={() => handleOpenModal(day)}
               className={cn(
                 "min-h-[80px] md:min-h-[140px] p-2 md:p-4 cursor-pointer transition-all rounded-xl md:rounded-3xl relative group border",
-                !isCurrentMonth ? "opacity-20 border-transparent pointer-events-none" : "hover:bg-zinc-50 bg-white",
-                isSelected ? "border-pink-500/30 bg-pink-50/30 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]" : "border-zinc-100 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-1px_rgba(0,0,0,0.03)]",
+                !isCurrentMonth ? "opacity-20 border-transparent pointer-events-none" : "hover:bg-zinc-50 dark:hover:bg-zinc-800 bg-white dark:bg-zinc-900",
+                isSelected ? "border-pink-500/30 bg-pink-50/30 dark:bg-pink-900/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]" : "border-zinc-100 dark:border-zinc-800 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-1px_rgba(0,0,0,0.03)]",
                 isToday && "ring-2 ring-pink-500/20 border-pink-500/50 shadow-[0_10px_20px_-5px_rgba(236,72,153,0.1)]"
               )}
             >
               <div className="flex justify-between items-start mb-1 md:mb-2">
                 <span className={cn(
                   "text-sm md:text-lg font-bold tracking-tight",
-                  isToday ? "text-pink-600" : "text-zinc-400 group-hover:text-zinc-900 transition-colors"
+                  isToday ? "text-pink-600" : "text-zinc-400 dark:text-zinc-600 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors"
                 )}>
                   {format(day, 'd')}
                 </span>
@@ -266,9 +266,9 @@ export default function Calendar({ userId }: CalendarProps) {
                       className={cn(
                         "flex items-center text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 rounded-lg md:rounded-xl border transition-all truncate",
                         isDeleted ? "bg-red-500/5 text-red-500/40 border-red-500/10 grayscale opacity-30" :
-                        isActive ? "bg-green-500/10 text-green-400 border-green-500/30 animate-pulse" :
-                        hasEnded ? "bg-zinc-500/5 text-zinc-500 border-zinc-500/10" :
-                        "bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20"
+                        isActive ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30 dark:border-green-500/20 animate-pulse" :
+                        hasEnded ? "bg-zinc-500/5 text-zinc-500 dark:text-zinc-600 border-zinc-500/10 dark:border-zinc-800" :
+                        "bg-indigo-500/10 dark:bg-violet-900/20 text-indigo-600 dark:text-violet-400 border-indigo-500/20 dark:border-violet-800 hover:bg-indigo-500/20 dark:hover:bg-violet-900/30"
                       )}
                     >
                       {isActive && <div className="w-1 h-1 rounded-full bg-green-400 mr-1 shadow-[0_0_5px_rgba(74,222,128,0.8)]" />}

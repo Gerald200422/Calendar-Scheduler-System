@@ -155,14 +155,14 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-sm">
-      <div className="bg-white border border-zinc-200 w-full max-w-lg rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 w-full max-w-lg rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden animate-in zoom-in-95 duration-200 transition-colors">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
-          <h3 className="text-xl font-bold text-zinc-900">
+        <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-900/50">
+          <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
             {initialEvent ? 'Edit Event' : 'Create New Event'}
           </h3>
-          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-900 transition-colors">
+          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -175,7 +175,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <input 
                 type="text" 
                 placeholder="Event Title" 
-                className="bg-transparent border-none outline-none text-zinc-900 w-full text-lg font-bold placeholder:text-zinc-300"
+                className="bg-transparent border-none outline-none text-zinc-900 dark:text-white w-full text-lg font-bold placeholder:text-zinc-300 dark:placeholder:text-zinc-600"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
@@ -187,7 +187,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <input 
                 type="text" 
                 placeholder="Add Location" 
-                className="bg-transparent border-none outline-none text-zinc-600 w-full text-sm placeholder:text-zinc-300"
+                className="bg-transparent border-none outline-none text-zinc-600 dark:text-zinc-400 w-full text-sm placeholder:text-zinc-300 dark:placeholder:text-zinc-600"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
@@ -199,7 +199,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <input 
                 type="email" 
                 placeholder="Guest Email (Optional)" 
-                className="bg-transparent border-none outline-none text-zinc-600 w-full text-sm placeholder:text-zinc-300"
+                className="bg-transparent border-none outline-none text-zinc-600 dark:text-zinc-400 w-full text-sm placeholder:text-zinc-300 dark:placeholder:text-zinc-600"
                 value={guestEmail}
                 onChange={(e) => setGuestEmail(e.target.value)}
               />
@@ -213,13 +213,13 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <div className="grid grid-cols-2 gap-3">
                 <input 
                   type="date" 
-                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
+                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
                 <input 
                   type="time" 
-                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
+                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                 />

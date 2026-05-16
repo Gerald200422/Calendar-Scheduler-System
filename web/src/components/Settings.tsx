@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Bell, Volume2, Mail, Smartphone, Save, Loader2, User } from 'lucide-react'
+import { Bell, Volume2, Mail, Smartphone, Save, Loader2, User, Moon, Sun } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { cn } from '@/lib/utils'
 
 interface SettingsProps {
   userId: string
@@ -18,6 +19,20 @@ export default function Settings({ userId }: SettingsProps) {
   const [message, setMessage] = useState('')
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [theme, setTheme] = useState('light')
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light'
+    setTheme(savedTheme)
+    document.documentElement.classList.toggle('dark', savedTheme === 'dark')
+  }, [])
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    localStorage.setItem('theme', newTheme)
+    document.documentElement.classList.toggle('dark', newTheme === 'dark')
+  }
 
   const playPreview = async (rt: any) => {
     setLoadingId(rt.id)
@@ -123,10 +138,36 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900">
-      <div className="mb-8 md:mb-12 text-center md:text-left">
-        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-500 bg-clip-text text-transparent">User Preferences</h2>
-        <p className="text-zinc-500 mt-2 font-medium text-sm md:text-base">Personalize your experience and alert delivery system.</p>
+    <div className="w-full max-w-4xl mx-auto p-6 md:p-10 bg-white dark:bg-zinc-900 rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900 dark:text-zinc-100 transition-colors">
+      <div className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="text-center md:text-left">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-500 bg-clip-text text-transparent">User Preferences</h2>
+          <p className="text-zinc-500 mt-2 font-medium text-sm md:text-base">Personalize your experience and alert delivery system.</p>
+        </div>
+        
+        {/* Theme Toggle Switch */}
+        <div className="flex items-center justify-center space-x-4 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-2xl border border-zinc-200 dark:border-zinc-700">
+          <button 
+            onClick={() => theme !== 'light' && toggleTheme()}
+            className={cn(
+              "flex items-center space-x-2 px-4 py-2 rounded-xl transition-all",
+              theme === 'light' ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
+            )}
+          >
+            <Sun size={18} />
+            <span className="text-xs font-bold uppercase tracking-widest">Light</span>
+          </button>
+          <button 
+            onClick={() => theme !== 'dark' && toggleTheme()}
+            className={cn(
+              "flex items-center space-x-2 px-4 py-2 rounded-xl transition-all",
+              theme === 'dark' ? "bg-zinc-900 text-white shadow-sm" : "text-zinc-500 hover:text-zinc-700"
+            )}
+          >
+            <Moon size={18} />
+            <span className="text-xs font-bold uppercase tracking-widest">Dark</span>
+          </button>
+        </div>
       </div>
 
       <div className="space-y-8 md:space-y-12">
@@ -141,7 +182,7 @@ export default function Settings({ userId }: SettingsProps) {
               type="text" 
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-zinc-900 text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all shadow-sm"
+              className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-zinc-900 dark:text-white text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all shadow-sm"
               placeholder="Your full name"
             />
           </section>
@@ -155,7 +196,7 @@ export default function Settings({ userId }: SettingsProps) {
               type="email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-zinc-900 text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all shadow-sm"
+              className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl md:rounded-2xl px-4 py-3 md:px-5 md:py-3.5 text-zinc-900 dark:text-white text-sm md:text-base outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all shadow-sm"
               placeholder="backup@email.com"
             />
           </section>
@@ -178,8 +219,8 @@ export default function Settings({ userId }: SettingsProps) {
                 onClick={() => setNotificationType(item.id)}
                 className={`group flex flex-row sm:flex-col items-center justify-center p-4 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 gap-4 sm:gap-2 ${
                   notificationType === item.id 
-                    ? 'bg-pink-50 border-pink-500 text-pink-600 shadow-[0_10px_20px_-5px_rgba(236,72,153,0.15)]' 
-                    : 'bg-zinc-50 border-zinc-100 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-100/50'
+                    ? 'bg-pink-50 dark:bg-pink-900/20 border-pink-500 text-pink-600 dark:text-pink-400 shadow-[0_10px_20px_-5px_rgba(236,72,153,0.15)]' 
+                    : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-700 text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-500 hover:bg-zinc-100/50 dark:hover:bg-zinc-800'
                 }`}
               >
                 <item.icon size={24} className={`sm:mb-1 transition-transform group-hover:scale-110`} />
@@ -202,8 +243,8 @@ export default function Settings({ userId }: SettingsProps) {
                   onClick={() => setRingtone(rt.id)}
                   className={`w-full flex items-center justify-between px-5 md:px-6 py-4 md:py-5 rounded-xl md:rounded-2xl border-2 transition-all duration-300 ${
                     ringtone === rt.id 
-                      ? 'bg-violet-50 border-violet-500 text-violet-600 shadow-[0_10px_20px_-5px_rgba(139,92,246,0.15)]' 
-                      : 'bg-zinc-50 border-zinc-100 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-100/50'
+                      ? 'bg-violet-50 dark:bg-violet-900/20 border-violet-500 text-violet-600 dark:text-violet-400 shadow-[0_10px_20px_-5px_rgba(139,92,246,0.15)]' 
+                      : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-700 text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-500 hover:bg-zinc-100/50 dark:hover:bg-zinc-800'
                   }`}
                 >
                   <div className="flex flex-col items-start text-left">
@@ -220,7 +261,7 @@ export default function Settings({ userId }: SettingsProps) {
                     playPreview(rt)
                   }}
                   disabled={loadingId === rt.id}
-                  className={`absolute right-12 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white border border-zinc-200 shadow-sm hover:bg-zinc-50 text-zinc-400 hover:text-zinc-900 transition-all ${playingId === rt.id ? 'text-violet-600 bg-violet-50 border-violet-200' : ''}`}
+                  className={`absolute right-12 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all ${playingId === rt.id ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800' : ''}`}
                 >
                   {loadingId === rt.id ? (
                     <Loader2 size={16} className="animate-spin" />
@@ -237,7 +278,7 @@ export default function Settings({ userId }: SettingsProps) {
         </section>
 
         {/* Save/Status */}
-        <div className="pt-8 md:pt-10 border-t border-zinc-100 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="pt-8 md:pt-10 border-t border-zinc-100 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className={`text-xs md:text-sm font-medium ${message.includes('Error') ? 'text-red-400' : 'text-emerald-400'}`}>
             {message}
           </p>

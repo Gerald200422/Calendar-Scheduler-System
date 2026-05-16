@@ -85,12 +85,12 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start bg-zinc-50 text-zinc-900 pb-24 md:pb-12">
+    <main className="flex min-h-screen flex-col items-center justify-start bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pb-24 md:pb-12 transition-colors">
       {/* Header (Matching Image) */}
-      <div className="w-full bg-white border-b border-zinc-200 shadow-sm sticky top-0 z-[100]">
+      <div className="w-full bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 shadow-sm sticky top-0 z-[100] transition-colors">
         <header className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-12">
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900">Scheduler Pro</h1>
+            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">Scheduler Pro</h1>
             <nav className="hidden md:flex items-center space-x-6 h-full">
               {['dashboard', 'calendar', 'settings'].map((tab) => (
                 <button 
@@ -98,12 +98,12 @@ export default function Home() {
                   onClick={() => setActiveTab(tab)}
                   className={cn(
                     "capitalize h-20 px-1 flex items-center text-sm font-bold transition-all relative",
-                    activeTab === tab ? "text-violet-600" : "text-zinc-500 hover:text-zinc-900"
+                    activeTab === tab ? "text-violet-600 dark:text-violet-400" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                   )}
                 >
                   {tab}
                   {activeTab === tab && (
-                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-violet-600 rounded-t-full" />
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-violet-600 dark:bg-violet-400 rounded-t-full" />
                   )}
                 </button>
               ))}
@@ -112,25 +112,25 @@ export default function Home() {
 
           <div className="flex items-center space-x-8">
             <div className="flex flex-col items-end">
-              <p className="text-[9px] font-black text-violet-600 uppercase tracking-widest leading-none mb-1">
+              <p className="text-[9px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest leading-none mb-1">
                 Philippine Standard Time
               </p>
-              <p className="text-sm font-mono font-bold text-zinc-900 tabular-nums">
+              <p className="text-sm font-mono font-bold text-zinc-900 dark:text-white tabular-nums">
                 {pstTime || '00:00:00 PM'}
               </p>
             </div>
 
-            <div className="flex items-center space-x-6 border-l border-zinc-200 pl-8">
-              <button className="text-zinc-400 hover:text-zinc-900 transition-colors">
+            <div className="flex items-center space-x-6 border-l border-zinc-200 dark:border-zinc-800 pl-8">
+              <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
               </button>
 
-              <div className="flex items-center space-x-3 group cursor-pointer border-l border-zinc-200 pl-6 py-2">
+              <div className="flex items-center space-x-3 group cursor-pointer border-l border-zinc-200 dark:border-zinc-800 pl-6 py-2">
                 <div className="flex flex-col items-end">
-                  <p className="text-xs font-bold text-zinc-900">{session.user.email}</p>
+                  <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{session.user.email}</p>
                   <button onClick={handleSignOut} className="text-[10px] font-black text-zinc-400 hover:text-red-500 uppercase tracking-widest">Sign Out</button>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white font-black shadow-lg">
+                <div className="w-10 h-10 rounded-full bg-violet-600 dark:bg-violet-500 flex items-center justify-center text-white font-black shadow-lg">
                   {session.user.email?.[0].toUpperCase()}
                 </div>
               </div>
@@ -157,7 +157,7 @@ export default function Home() {
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="md:hidden fixed bottom-6 left-6 right-6 z-50">
-        <nav className="flex items-center justify-around p-4 bg-white/80 backdrop-blur-2xl border border-zinc-200 rounded-[2rem] shadow-xl">
+        <nav className="flex items-center justify-around p-4 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-zinc-200 dark:border-zinc-800 rounded-[2rem] shadow-xl transition-colors">
           {[
             { id: 'dashboard', label: 'Home' },
             { id: 'calendar', label: 'Calendar' },
@@ -168,12 +168,12 @@ export default function Home() {
               onClick={() => setActiveTab(item.id)}
               className={cn(
                 "flex flex-col items-center space-y-1 transition-all",
-                activeTab === item.id ? "text-violet-600 scale-110" : "text-zinc-400"
+                activeTab === item.id ? "text-violet-600 dark:text-violet-400 scale-110" : "text-zinc-400 dark:text-zinc-600"
               )}
             >
               <div className={cn(
                 "w-1 h-1 rounded-full mb-1 transition-all",
-                activeTab === item.id ? "bg-violet-600" : "bg-transparent"
+                activeTab === item.id ? "bg-violet-600 dark:bg-violet-400" : "bg-transparent"
               )} />
               <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
             </button>

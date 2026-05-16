@@ -60,13 +60,13 @@ export default function PushManager({ userId }: { userId: string }) {
   if (permission === 'granted') return null // Already subscribed or blocked (user can change in browser settings)
 
   return (
-    <div className="fixed bottom-24 md:bottom-12 right-6 md:right-12 z-50 animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="bg-white border border-zinc-200 p-6 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] max-w-sm flex flex-col items-center text-center">
-        <div className="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center mb-4 border border-pink-100">
+    <div className="fixed bottom-24 md:bottom-12 right-6 md:right-12 z-50 animate-in fade-in slide-in-from-right-4 duration-500 transition-colors">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] max-w-sm flex flex-col items-center text-center">
+        <div className="w-12 h-12 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center mb-4 border border-pink-100 dark:border-pink-800">
           <Bell size={24} className="text-pink-500 animate-bounce" />
         </div>
-        <h3 className="text-lg font-bold text-zinc-900 mb-2">Enable Laptop Alerts</h3>
-        <p className="text-zinc-500 text-xs mb-6 leading-relaxed">
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Enable Laptop Alerts</h3>
+        <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-6 leading-relaxed">
           Stay on top of your schedule with real-time browser notifications even when the tab is closed.
         </p>
         
@@ -80,10 +80,10 @@ export default function PushManager({ userId }: { userId: string }) {
         <button
           onClick={subscribeToPush}
           disabled={loading}
-          className="w-full py-3.5 bg-zinc-900 text-white rounded-xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 hover:scale-[1.03] active:scale-[0.97] transition-all disabled:opacity-50 flex items-center justify-center shadow-lg"
+          className="w-full py-3.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 dark:hover:bg-zinc-100 hover:scale-[1.03] active:scale-[0.97] transition-all disabled:opacity-50 flex items-center justify-center shadow-lg"
         >
           {loading ? (
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-zinc-900/30 dark:border-white/30 border-t-zinc-900 dark:border-t-white rounded-full animate-spin" />
           ) : (
             <>
               <ShieldCheck size={16} className="mr-2" /> Enable Notifications
