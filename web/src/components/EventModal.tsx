@@ -28,6 +28,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
   const [location, setLocation] = useState('')
   const [guestEmail, setGuestEmail] = useState('')
   const [status, setStatus] = useState('upcoming')
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const ringtones = [
     { id: 'samsung_ringtone.mp3', name: 'Samsung Alert' },
@@ -57,16 +58,18 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
       setLocation(initialEvent.location || '')
       setGuestEmail(initialEvent.guest_email || '')
       setStatus(initialEvent.status || 'upcoming')
+      setErrors({})
     } else if (isOpen) {
       setTitle('')
       setDescription('')
       setLocation('')
       setGuestEmail('')
-      setRingtoneOverride('')
-      setNotificationStyle('default')
-      setRingtoneDuration(30)
       setNotificationType('both')
+      setNotificationStyle('default')
+      setRingtoneOverride('')
+      setRingtoneDuration(30)
       setStatus('upcoming')
+      setErrors({})
       
       const startStr = format(selectedDate, 'yyyy-MM-dd')
       setStartDate(startStr)
@@ -129,14 +132,37 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
   if (!isOpen) return null
 
   const handleSave = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!title.trim()) {
+      newErrors.title = 'Event title is required'
+    }
+
+    if (guestEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) {
+      newErrors.guestEmail = 'Invalid email format'
+    }
+
     const startObj = new Date(`${startDate}T${startTime}`)
     const endObj = new Date(`${endDate}T${endTime}`)
 
-    if (isBefore(endObj, startObj)) {
-      alert('End time cannot be before start time.')
+    if (isNaN(startObj.getTime())) {
+      newErrors.startTime = 'Invalid start time'
+    }
+
+    if (isNaN(endObj.getTime())) {
+      newErrors.endTime = 'Invalid end time'
+    }
+
+    if (!newErrors.startTime && !newErrors.endTime && isBefore(endObj, startObj)) {
+      newErrors.endTime = 'End time must be after start time'
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
       return
     }
 
+    setErrors({})
     onSave({ 
       id: initialEvent?.id,
       title, 
@@ -170,15 +196,24 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
         {/* Body */}
         <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800 scrollbar-track-transparent">
           <div className="space-y-6">
-            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
-              <Type size={18} />
-              <input 
-                type="text" 
-                placeholder="Event Title" 
-                className="bg-transparent border-none outline-none text-zinc-900 dark:text-white w-full text-lg font-bold placeholder:text-zinc-300 dark:placeholder:text-zinc-600"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+            <div className="space-y-1">
+              <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
+                <Type size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Event Title" 
+                  className={cn(
+                    "bg-transparent border-none outline-none text-zinc-900 dark:text-white w-full text-lg font-bold placeholder:text-zinc-300 dark:placeholder:text-zinc-600",
+                    errors.title && "text-red-500 placeholder:text-red-300"
+                  )}
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value)
+                    if (errors.title) setErrors(prev => ({ ...prev, title: '' }))
+                  }}
+                />
+              </div>
+              {errors.title && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest ml-7">{errors.title}</p>}
             </div>
 
             {/* Location Field */}
@@ -194,15 +229,24 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
             </div>
 
             {/* Guest Email Field */}
-            <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
-              <Bell size={18} className="opacity-50" />
-              <input 
-                type="email" 
-                placeholder="Guest Email (Optional)" 
-                className="bg-transparent border-none outline-none text-zinc-600 dark:text-zinc-400 w-full text-sm placeholder:text-zinc-300 dark:placeholder:text-zinc-600"
-                value={guestEmail}
-                onChange={(e) => setGuestEmail(e.target.value)}
-              />
+            <div className="space-y-1">
+              <div className="flex items-center space-x-3 text-zinc-400 focus-within:text-pink-600 transition-colors">
+                <Bell size={18} className="opacity-50" />
+                <input 
+                  type="email" 
+                  placeholder="Guest Email (Optional)" 
+                  className={cn(
+                    "bg-transparent border-none outline-none text-zinc-600 dark:text-zinc-400 w-full text-sm placeholder:text-zinc-300 dark:placeholder:text-zinc-600",
+                    errors.guestEmail && "text-red-500 placeholder:text-red-300"
+                  )}
+                  value={guestEmail}
+                  onChange={(e) => {
+                    setGuestEmail(e.target.value)
+                    if (errors.guestEmail) setErrors(prev => ({ ...prev, guestEmail: '' }))
+                  }}
+                />
+              </div>
+              {errors.guestEmail && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest ml-7">{errors.guestEmail}</p>}
             </div>
 
             {/* Start Section */}
@@ -213,17 +257,31 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <div className="grid grid-cols-2 gap-3">
                 <input 
                   type="date" 
-                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
+                  className={cn(
+                    "bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm",
+                    errors.startTime && "border-red-500 ring-red-500/20"
+                  )}
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={(e) => {
+                    setStartDate(e.target.value)
+                    if (errors.startTime) setErrors(prev => ({ ...prev, startTime: '' }))
+                  }}
                 />
                 <input 
                   type="time" 
-                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
+                  className={cn(
+                    "bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm",
+                    errors.startTime && "border-red-500 ring-red-500/20"
+                  )}
                   value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
+                  onChange={(e) => {
+                    setStartTime(e.target.value)
+                    if (errors.startTime) setErrors(prev => ({ ...prev, startTime: '' }))
+                  }}
                 />
               </div>
+              {errors.startTime && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{errors.startTime}</p>}
+            </div>
             </div>
 
             {/* End Section */}
