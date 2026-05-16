@@ -149,26 +149,27 @@ serve(async (req: Request) => {
                 const ringtoneName = baseRingtone.replace('.mp3', '')
                 const isAlarm = event.notification_style === 'alarm'
                 
-                const schedTime = new Date(notif.scheduled_for).getTime()
-                const startTime = new Date(event.start_time).getTime()
-                const endTime = new Date(event.end_time).getTime()
+                const schedTime = Math.floor(new Date(notif.scheduled_for).getTime() / 1000) * 1000
+                const startTime = Math.floor(new Date(event.start_time).getTime() / 1000) * 1000
+                const endTime = Math.floor(new Date(event.end_time).getTime() / 1000) * 1000
                 
-                const isEndNotif = Math.abs(schedTime - endTime) < 60000
-                const isStartNotif = Math.abs(schedTime - startTime) < 60000
+                const isEndNotif = Math.abs(schedTime - endTime) < 5000 // 5 second tolerance
+                const isStartNotif = Math.abs(schedTime - startTime) < 5000
                 const isReminder = schedTime < startTime && !isStartNotif
 
                 let pushTitle = `📅 ${event.title}`
-                let pushBody = `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`
+                let pushBody = `Scheduled for ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`
 
                 if (isEndNotif) {
-                  pushTitle = `🏁 Event Ended: ${event.title}`
-                  pushBody = `Hope it went well! Your schedule is now clear.`
+                  pushTitle = `🏁 Finished: ${event.title}`
+                  pushBody = `This event has ended. Hope it was productive!`
                 } else if (isReminder) {
                   pushTitle = `🔔 Reminder: ${event.title}`
-                  pushBody = `Starting in 15 minutes! Get ready.`
-                } else if (isStartNotif) {
-                  pushTitle = `🚀 Starting Now: ${event.title}`
-                  pushBody = `Your event is beginning. ${event.location ? `📍 ${event.location}` : ''}`
+                  const diffMins = Math.round((startTime - schedTime) / 60000)
+                  pushBody = `Starting in ${diffMins} minutes! ${event.location ? `📍 ${event.location}` : ''}`
+                } else if (isStartNotif || schedTime >= startTime) {
+                  pushTitle = `🚀 Ongoing: ${event.title}`
+                  pushBody = `Your event has started. ${event.location ? `📍 ${event.location}` : ''}`
                 }
                 
                 const pushData = expoTokens.map((token: string) => ({
@@ -211,26 +212,27 @@ serve(async (req: Request) => {
  
               for (const sub of webSubscriptions) {
                 try {
-                  const schedTime = new Date(notif.scheduled_for).getTime()
-                  const startTime = new Date(event.start_time).getTime()
-                  const endTime = new Date(event.end_time).getTime()
+                  const schedTime = Math.floor(new Date(notif.scheduled_for).getTime() / 1000) * 1000
+                  const startTime = Math.floor(new Date(event.start_time).getTime() / 1000) * 1000
+                  const endTime = Math.floor(new Date(event.end_time).getTime() / 1000) * 1000
                   
-                  const isEndNotif = Math.abs(schedTime - endTime) < 60000
-                  const isStartNotif = Math.abs(schedTime - startTime) < 60000
+                  const isEndNotif = Math.abs(schedTime - endTime) < 5000
+                  const isStartNotif = Math.abs(schedTime - startTime) < 5000
                   const isReminder = schedTime < startTime && !isStartNotif
 
                   let pushTitle = `📅 ${event.title}`
-                  let pushBody = `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`
+                  let pushBody = `Scheduled for ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`
 
                   if (isEndNotif) {
-                    pushTitle = `🏁 Event Ended: ${event.title}`
-                    pushBody = `Hope it went well! Your schedule is now clear.`
+                    pushTitle = `🏁 Finished: ${event.title}`
+                    pushBody = `This event has ended. Hope it was productive!`
                   } else if (isReminder) {
                     pushTitle = `🔔 Reminder: ${event.title}`
-                    pushBody = `Starting in 15 minutes! Get ready.`
-                  } else if (isStartNotif) {
-                    pushTitle = `🚀 Starting Now: ${event.title}`
-                    pushBody = `Your event is beginning. ${event.location ? `📍 ${event.location}` : ''}`
+                    const diffMins = Math.round((startTime - schedTime) / 60000)
+                    pushBody = `Starting in ${diffMins} minutes! ${event.location ? `📍 ${event.location}` : ''}`
+                  } else if (isStartNotif || schedTime >= startTime) {
+                    pushTitle = `🚀 Ongoing: ${event.title}`
+                    pushBody = `Your event has started. ${event.location ? `📍 ${event.location}` : ''}`
                   }
 
                   const payload = JSON.stringify({
