@@ -123,7 +123,6 @@ export default function Settings({ userId }: SettingsProps) {
   }
 
   return (
-  return (
     <div className="w-full max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900">
       <div className="mb-8 md:mb-12 text-center md:text-left">
         <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-500 bg-clip-text text-transparent">User Preferences</h2>
