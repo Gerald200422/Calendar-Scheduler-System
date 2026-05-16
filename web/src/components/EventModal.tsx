@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { X, Bell, Clock, AlignLeft, Type, Trash2, Calendar as CalendarIcon, ArrowRight, ToggleLeft, ToggleRight } from 'lucide-react'
 import { format, parseISO, differenceInMinutes, isBefore } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 interface EventModalProps {
   isOpen: boolean
@@ -281,7 +282,6 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                 />
               </div>
               {errors.startTime && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{errors.startTime}</p>}
-            </div>
             </div>
 
             {/* End Section */}
