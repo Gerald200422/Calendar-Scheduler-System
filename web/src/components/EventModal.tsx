@@ -302,14 +302,14 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                 {!isSameDay && (
                   <input 
                     type="date" 
-                    className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
+                    className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
                 )}
                 <input 
                   type="time" 
-                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
+                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all text-sm shadow-sm"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                   style={{ gridColumn: isSameDay ? 'span 2' : 'span 1' }}
@@ -325,7 +325,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               </div>
               <div className="flex-1">
                 <select 
-                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
+                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
                   value={notificationType}
                   onChange={(e) => setNotificationType(e.target.value)}
                 >
@@ -341,7 +341,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Alert Style</label>
                 <select 
-                  className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
+                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
                   value={notificationStyle}
                   onChange={(e) => setNotificationStyle(e.target.value)}
                 >
@@ -355,7 +355,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Select Ringtone</label>
                     <select 
-                      className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
+                      className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500/50 transition-all w-full text-sm appearance-none shadow-sm cursor-pointer"
                       value={ringtoneOverride}
                       onChange={(e) => setRingtoneOverride(e.target.value)}
                     >
@@ -378,7 +378,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                         value={ringtoneDuration}
                         onChange={(e) => setRingtoneDuration(parseInt(e.target.value))}
                       />
-                      <span className="text-sm font-bold text-zinc-900 w-12 text-right">{ringtoneDuration}s</span>
+                      <span className="text-sm font-bold text-zinc-900 dark:text-white w-12 text-right">{ringtoneDuration}s</span>
                     </div>
                   </div>
                 </div>
@@ -392,8 +392,8 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
                 onClick={() => setStatus(status === 'deleted' ? 'upcoming' : 'deleted')}
                 className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
                   status === 'deleted' 
-                    ? 'bg-red-50 text-red-600 border-red-200 shadow-sm'
-                    : 'bg-zinc-50 text-zinc-600 border-zinc-200 shadow-sm'
+                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 shadow-sm'
+                    : 'bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 shadow-sm'
                 }`}
               >
                 {status === 'deleted' ? 'Soft Deleted' : 'Normal'}
@@ -414,7 +414,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, selected
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-zinc-50 border-t border-zinc-100 flex justify-between items-center">
+        <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-900/50 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
           <div>
             {initialEvent && onDelete && (
               <button 
