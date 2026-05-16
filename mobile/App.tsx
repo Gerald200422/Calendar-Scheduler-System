@@ -241,7 +241,7 @@ async function registerForPushNotificationsAsync() {
     });
 
     // 2. Crystal Channel
-    await Notifications.setNotificationChannelAsync('v3-crystal_chime', {
+    await Notifications.setNotificationChannelAsync('v4-crystal_chime', {
       name: 'Crystal Chime',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 50, 100],
@@ -252,7 +252,7 @@ async function registerForPushNotificationsAsync() {
     });
 
     // 3. Classic Channel
-    await Notifications.setNotificationChannelAsync('v3-classic_bell', {
+    await Notifications.setNotificationChannelAsync('v4-classic_bell', {
       name: 'Classic Bell',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 500, 100, 500],
@@ -263,7 +263,7 @@ async function registerForPushNotificationsAsync() {
     });
 
     // 4. Modern Channel
-    await Notifications.setNotificationChannelAsync('v3-modern_synth', {
+    await Notifications.setNotificationChannelAsync('v4-modern_synth', {
       name: 'Modern Synth',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 100, 100, 100, 100, 100, 500],

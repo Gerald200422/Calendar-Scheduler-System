@@ -154,12 +154,11 @@ serve(async (req: Request) => {
                   title: `📅 ${event.title}`,
                   body: `Starts at ${new Date(event.start_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', hour12: true })}.${event.location ? ` | 📍 ${event.location}` : ''}`,
                   data: { event_id: event.id, ringtone: baseRingtone, duration: ringtoneDuration, type: isAlarm ? 'ALARM' : 'NOTIFICATION' },
-                  // Use 'default' sound if not alarm style
-                  sound: isAlarm ? ringtoneName : 'default',
-                  // Use v4 channel for alarms, default for others
-                  channelId: isAlarm ? `v4-${ringtoneName}` : 'default',
+                  // Always use the custom sound and channel for notifications
+                  sound: baseRingtone,
+                  channelId: `v4-${ringtoneName}`,
                   categoryIdentifier: isAlarm ? 'ALARM' : undefined,
-                  priority: isAlarm ? 'high' : 'normal',
+                  priority: 'high',
                 }))
               await fetch('https://exp.host/--/api/v2/push/send', {
                 method: 'POST',

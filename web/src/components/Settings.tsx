@@ -72,7 +72,7 @@ export default function Settings({ userId }: SettingsProps) {
       console.error('Error fetching profile:', error)
     } else if (data) {
       setNotificationType(data.notification_type || 'both')
-      setRingtone(data.ringtone_choice || 'alert1.wav')
+      setRingtone(data.ringtone_choice || 'samsung_ringtone.mp3')
       setEmail(data.email || '')
       setFullName(data.full_name || '')
     }
