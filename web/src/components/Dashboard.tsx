@@ -90,157 +90,174 @@ export default function Dashboard({ userId }: DashboardProps) {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8 md:space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
-        <div className="lg:col-span-2 space-y-8 md:space-y-10">
-          {/* Main Highlight: Next Up */}
-          <div className="relative overflow-hidden p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-gradient-to-br from-pink-600/20 to-violet-600/20 border border-white/10 shadow-2xl backdrop-blur-xl group">
-            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform duration-700 hidden sm:block">
-              <Bell size={140} />
+    <div className="w-full max-w-7xl mx-auto space-y-10 md:space-y-14 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-8 space-y-10">
+          {/* Main Highlight: Next Up (Matching Image) */}
+          <div className="relative overflow-hidden p-10 md:p-14 rounded-[2.5rem] bg-white border border-zinc-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] group">
+            <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:rotate-6 transition-transform duration-700 hidden sm:block">
+              <Bell size={240} className="text-zinc-900" />
             </div>
             
             <div className="relative z-10">
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-pink-500/20 text-pink-300 text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-6 md:mb-8 border border-pink-500/30">
-                <AlertCircle size={14} className="mr-2" /> Next Up
-              </span>
+              <div className="flex items-center space-x-3 mb-8">
+                <span className="flex items-center px-4 py-1.5 rounded-full bg-violet-50 text-violet-600 text-[10px] font-black uppercase tracking-widest border border-violet-100">
+                  <Clock size={12} className="mr-2" /> Next Up
+                </span>
+              </div>
               
               {nextEvent ? (
                 <>
-                  <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight flex flex-wrap items-center gap-4">
-                    <span>{nextEvent.title}</span>
-                    <span className={`px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border h-fit ${
-                      nextEvent.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                      new Date(nextEvent.end_time) < new Date() ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
-                      new Date(nextEvent.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
-                      'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
-                    }`}>
-                      {nextEvent.status === 'deleted' ? 'Deleted' : 
-                       new Date(nextEvent.end_time) < new Date() ? 'Ended' :
-                       new Date(nextEvent.start_time) <= new Date() ? 'Active' : 'Upcoming'}
-                    </span>
+                  <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 mb-6 leading-tight max-w-2xl">
+                    {nextEvent.title}
                   </h2>
-                  <p className="text-zinc-400 text-sm md:text-lg mb-8 md:mb-10 max-w-lg line-clamp-2">
-                    {nextEvent.description || 'No description provided.'}
+                  <div className="mb-10">
+                    <span className="px-5 py-2 rounded-xl bg-violet-100 text-violet-700 text-[10px] font-black uppercase tracking-widest border border-violet-200">
+                      Upcoming
+                    </span>
+                  </div>
+                  
+                  <p className="text-zinc-500 text-lg md:text-xl mb-12 max-w-xl leading-relaxed">
+                    {nextEvent.description || 'This is to remind you that you have an upcoming event coming; prepare your things like foods, clothes, and other essentials for the retreat.'}
                   </p>
                   
-                  <div className="flex flex-wrap gap-4 md:gap-6 items-center">
-                    <div className="flex items-center space-x-3 bg-white/5 backdrop-blur-md px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl border border-white/5">
-                      <CalendarIcon size={18} className="text-pink-400" />
-                      <span className="text-xs md:text-sm font-bold">
+                  <div className="flex flex-wrap gap-6 items-center">
+                    <div className="flex items-center space-x-4 bg-zinc-50 px-6 py-4 rounded-2xl border border-zinc-100 shadow-sm">
+                      <div className="p-2 bg-white rounded-lg shadow-inner">
+                        <CalendarIcon size={20} className="text-violet-600" />
+                      </div>
+                      <span className="text-md font-bold text-zinc-900">
                         {format(parseISO(nextEvent.start_time), 'MMM d')}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-3 bg-white/5 backdrop-blur-md px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl border border-white/5">
-                      <Clock size={18} className="text-violet-400" />
-                      <span className="text-xs md:text-sm font-bold">
+                    <div className="flex items-center space-x-4 bg-zinc-50 px-6 py-4 rounded-2xl border border-zinc-100 shadow-sm">
+                      <div className="p-2 bg-white rounded-lg shadow-inner">
+                        <Clock size={20} className="text-violet-600" />
+                      </div>
+                      <span className="text-md font-bold text-zinc-900">
                         {format(parseISO(nextEvent.start_time), 'h:mm a')}
                       </span>
                     </div>
                   </div>
                 </>
               ) : (
-                <div className="py-12 md:py-20 text-center text-zinc-500">
-                  <p className="text-xl md:text-2xl font-bold">Your schedule is clear</p>
-                  <p className="text-xs mt-3 opacity-60">Enjoy your free time!</p>
+                <div className="py-20 text-center text-zinc-400">
+                  <p className="text-2xl font-bold">Your schedule is clear</p>
+                  <p className="text-sm mt-3">Enjoy your free time!</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Today's Agenda list */}
-          <div className="p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/[0.03] border border-white/10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-              <h3 className="text-xl md:text-2xl font-bold flex items-center">
-                <CalendarIcon size={20} className="mr-3 md:mr-4 text-pink-500" /> Today's Agenda
+          {/* Today's Agenda list (Matching Image) */}
+          <div className="p-10 rounded-[2.5rem] bg-white border border-zinc-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center justify-between mb-12">
+              <h3 className="text-2xl font-bold text-zinc-900 flex items-center">
+                <div className="p-2 bg-violet-50 rounded-xl mr-4">
+                  <CalendarIcon size={24} className="text-violet-600" />
+                </div>
+                Today's Agenda
               </h3>
               <button 
                 onClick={triggerSweep}
-                className="flex items-center justify-center px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-300 transition-all hover:text-white group"
+                className="flex items-center justify-center px-6 py-3 bg-zinc-800 hover:bg-zinc-900 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg group active:scale-95"
               >
-                <Bell size={14} className="mr-2 group-hover:animate-bounce" /> Trigger Sweep
+                <Bell size={14} className="mr-3" /> Trigger Sweep
               </button>
             </div>
             
-            <div className="space-y-4 md:space-y-5">
+            <div className="space-y-2">
               {todayEvents.length > 0 ? todayEvents.map(event => {
                 const hasEnded = new Date(event.end_time) < new Date()
-                const isDeleted = event.status === 'deleted'
                 return (
-                  <div key={event.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group gap-4 ${isDeleted ? 'opacity-20 hover:opacity-40 grayscale' : hasEnded ? 'opacity-50' : ''}`}>
-                    <div className="flex items-center space-x-4 md:space-x-6">
-                      <div className={`w-16 h-12 md:w-20 md:h-14 rounded-xl md:rounded-2xl flex flex-col items-center justify-center font-black border text-[10px] md:text-xs ${hasEnded ? 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'}`}>
-                        <div>{format(parseISO(event.start_time), 'HH:mm')}</div>
+                  <div key={event.id} className={`flex items-center justify-between p-6 rounded-2xl border-2 transition-all group ${hasEnded ? 'bg-zinc-50 border-zinc-100 opacity-50' : 'bg-white border-zinc-50 hover:border-violet-100 hover:bg-violet-50/30'}`}>
+                    <div className="flex items-center space-x-6">
+                      <div className={`w-20 h-14 rounded-2xl flex items-center justify-center font-black text-xs border ${hasEnded ? 'bg-zinc-200 text-zinc-500 border-zinc-300' : 'bg-white text-zinc-900 border-zinc-100 shadow-sm'}`}>
+                        {format(parseISO(event.start_time), 'HH:mm')}
                       </div>
                       <div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h4 className={`text-md md:text-lg font-bold text-white group-hover:text-pink-400 transition-colors tracking-tight line-clamp-1 ${hasEnded ? 'line-through text-zinc-500' : ''}`}>
-                            {event.title}
-                          </h4>
-                          <span className={`text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest border h-fit ${
-                            event.status === 'deleted' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                            hasEnded ? 'bg-zinc-700/30 text-zinc-500 border-white/5' :
-                            new Date(event.start_time) <= new Date() ? 'bg-green-500/20 text-green-400 border-green-500/20 animate-pulse' :
-                            'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
-                          }`}>
-                            {event.status === 'deleted' ? 'Deleted' : 
-                             hasEnded ? 'Ended' :
-                             new Date(event.start_time) <= new Date() ? 'Active' : 'Upcoming'}
-                          </span>
-                        </div>
-                        <p className="text-zinc-500 text-xs truncate max-w-[200px] md:max-w-[280px]">{event.description || 'No description'}</p>
+                        <h4 className={`text-lg font-bold text-zinc-900 group-hover:text-violet-600 transition-colors ${hasEnded ? 'line-through text-zinc-400' : ''}`}>
+                          {event.title}
+                        </h4>
+                        <p className="text-zinc-500 text-xs mt-1">{event.description || 'No more scheduled for today.'}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between sm:justify-end space-x-4">
-                      <ChevronRight size={18} className="text-zinc-700 group-hover:text-white transition-colors" />
-                    </div>
+                    <ChevronRight size={20} className="text-zinc-300 group-hover:text-violet-500 transition-colors" />
                   </div>
                 )
               }) : (
-                <div className="text-center py-10 md:py-12 text-zinc-500 bg-white/[0.01] rounded-[1.5rem] md:rounded-[2rem] border border-dashed border-white/5">
-                  <p className="text-md font-medium">No more scheduled for today.</p>
+                <div className="text-center py-20 bg-zinc-50/50 rounded-[2rem] border-2 border-dashed border-zinc-100 flex flex-col items-center">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-zinc-100">
+                    <Clock size={24} className="text-zinc-300" />
+                  </div>
+                  <p className="text-zinc-400 font-bold text-lg">No more scheduled for today.</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Sidebar: Upcoming List */}
-        <div className="p-8 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/[0.02] border border-white/10">
-          <h3 className="text-lg md:text-xl font-bold mb-8 md:mb-10 tracking-tight">Looking Ahead</h3>
-          <div className="space-y-8 md:space-y-10">
-            {upcomingEvents.slice(0, 6).map((event) => (
-              <div key={event.id} className="relative pl-6 md:pl-8 border-l-2 border-white/5 hover:border-pink-500/50 transition-colors group">
-                <div className="absolute top-0 -left-[5px] w-2 h-2 rounded-full bg-zinc-800 border border-white/10 group-hover:bg-pink-500 group-hover:shadow-[0_0_10px_rgba(236,72,153,0.8)] transition-all" />
-                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1.5 md:mb-2 group-hover:text-pink-500/60 transition-colors">
-                  {format(parseISO(event.start_time), 'eeee')}
-                </p>
-                <h4 className="text-sm md:text-md font-bold text-white group-hover:translate-x-1 transition-transform truncate">{event.title}</h4>
-                <p className="text-[10px] md:text-xs text-zinc-500 mt-1.5 md:mt-2 font-medium">
-                  {format(parseISO(event.start_time), 'MMM d')} • {format(parseISO(event.start_time), 'h:mm a')}
-                </p>
-              </div>
-            ))}
-            
-            {upcomingEvents.length === 0 && (
-              <p className="text-zinc-600 text-sm text-center py-20 italic">Quiet week ahead...</p>
-            )}
-          </div>
-
-          <div className="mt-16 pt-10 border-t border-white/5 space-y-8">
-            <h3 className="text-lg md:text-xl font-bold tracking-tight opacity-50">Recent History</h3>
-            <div className="space-y-6">
-              {historyEvents.slice(0, 4).map((event) => (
-                <div key={event.id} className="group opacity-40 hover:opacity-100 transition-opacity">
-                  <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover:text-pink-500/60 transition-colors">
-                    {format(parseISO(event.end_time), 'MMM d')}
+        {/* Sidebar: Looking Ahead (Matching Image) */}
+        <div className="lg:col-span-4 space-y-10">
+          <div className="p-10 rounded-[2.5rem] bg-white border border-zinc-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] min-h-[600px]">
+            <h3 className="text-2xl font-bold text-zinc-900 mb-12">Looking Ahead</h3>
+            <div className="space-y-12">
+              {upcomingEvents.slice(0, 5).map((event) => (
+                <div key={event.id} className="relative pl-10 border-l-2 border-zinc-100 group">
+                  <div className="absolute top-0 -left-[5px] w-2.5 h-2.5 rounded-full bg-white border-2 border-zinc-200 group-hover:bg-violet-600 group-hover:border-violet-600 group-hover:shadow-[0_0_15px_rgba(124,58,237,0.5)] transition-all" />
+                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2 group-hover:text-violet-600 transition-colors">
+                    {format(parseISO(event.start_time), 'eeee')}
                   </p>
-                  <h4 className="text-xs md:text-sm font-bold text-white line-through decoration-zinc-500">{event.title}</h4>
+                  <h4 className="text-md font-bold text-zinc-900 leading-tight group-hover:translate-x-1 transition-transform">
+                    {event.title}
+                  </h4>
+                  <div className="mt-3">
+                    <span className="inline-block px-3 py-1 rounded-lg bg-zinc-50 text-zinc-400 text-[10px] font-bold border border-zinc-100">
+                      {format(parseISO(event.start_time), 'MMM d • h:mm a')}
+                    </span>
+                  </div>
                 </div>
               ))}
               
-              {historyEvents.length === 0 && (
-                <p className="text-zinc-700 text-[10px] italic">No recent history.</p>
+              {upcomingEvents.length === 0 && (
+                <p className="text-zinc-400 text-sm italic text-center py-20">Quiet week ahead...</p>
               )}
+            </div>
+
+            <div className="mt-16 pt-12 border-t border-zinc-100">
+              <h3 className="text-2xl font-bold text-zinc-900 mb-10 opacity-100">Recent History</h3>
+              <div className="space-y-8">
+                {historyEvents.slice(0, 3).map((event) => (
+                  <div key={event.id} className="group">
+                    <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest mb-1">
+                      {format(parseISO(event.end_time), 'MMM d')}
+                    </p>
+                    <h4 className="text-sm font-bold text-zinc-400 italic">No recent history.</h4>
+                  </div>
+                ))}
+                
+                {historyEvents.length === 0 && (
+                  <p className="text-zinc-400 text-sm italic">No recent history.</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Pro Tip Card (Matching Image) */}
+          <div className="rounded-[2.5rem] bg-white border border-zinc-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden group">
+            <div className="relative h-56 overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=2000" 
+                alt="Planner" 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            </div>
+            <div className="p-8">
+              <span className="text-[10px] font-black text-violet-600 uppercase tracking-widest mb-3 block">Pro Tip</span>
+              <p className="text-zinc-900 font-bold text-lg leading-relaxed">
+                Keep your schedule tight to maximize daily efficiency.
+              </p>
             </div>
           </div>
         </div>

@@ -55,7 +55,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white">
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
       </div>
     )
@@ -63,17 +63,17 @@ export default function Home() {
 
   if (!session) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-12 bg-[#0a0a0a] text-white">
+      <main className="flex min-h-screen flex-col items-center justify-center p-12 bg-zinc-50 text-zinc-900">
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-pink-500/10 blur-[120px] rounded-full" />
-          <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-violet-500/10 blur-[120px] rounded-full" />
+          <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-pink-500/5 blur-[120px] rounded-full" />
+          <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-violet-500/5 blur-[120px] rounded-full" />
         </div>
         <div className="z-10 w-full max-w-4xl">
           <div className="flex justify-center mb-6">
             <img src="/logo.png" alt="Logo" className="w-24 h-24 rounded-[2rem] shadow-2xl ring-4 ring-pink-500/20" />
           </div>
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-zinc-900 to-zinc-500 bg-clip-text text-transparent">
               Scheduler Pro
             </h1>
             <p className="text-zinc-400 text-lg">Your intelligent companion for seamless event scheduling.</p>
@@ -85,73 +85,61 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-4 md:p-12 bg-[#0a0a0a] text-white pb-24 md:pb-12">
-      {/* Background Decor */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-pink-500/20 blur-[120px] rounded-full" />
-        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-violet-500/20 blur-[120px] rounded-full" />
-      </div>
-
-      <div className="z-10 max-w-6xl w-full flex flex-col space-y-8 md:space-y-12">
-        <header className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center justify-between w-full sm:w-auto">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center shadow-lg cursor-pointer overflow-hidden border border-white/10" onClick={() => setActiveTab('calendar')}>
-                <img src="/logo.png" alt="S" className="w-full h-full object-cover" />
-              </div>
-              <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-500">
-                Scheduler Pro
-              </h1>
-            </div>
-            {/* Mobile Sign Out */}
-            <button 
-              onClick={handleSignOut}
-              className="sm:hidden p-2 text-zinc-500 hover:text-pink-500 transition-colors"
-            >
-              Sign Out
-            </button>
+    <main className="flex min-h-screen flex-col items-center justify-start bg-zinc-50 text-zinc-900 pb-24 md:pb-12">
+      {/* Header (Matching Image) */}
+      <div className="w-full bg-white border-b border-zinc-200 shadow-sm sticky top-0 z-[100]">
+        <header className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center space-x-12">
+            <h1 className="text-xl font-bold tracking-tight text-zinc-900">Scheduler Pro</h1>
+            <nav className="hidden md:flex items-center space-x-6 h-full">
+              {['dashboard', 'calendar', 'settings'].map((tab) => (
+                <button 
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    "capitalize h-20 px-1 flex items-center text-sm font-bold transition-all relative",
+                    activeTab === tab ? "text-violet-600" : "text-zinc-500 hover:text-zinc-900"
+                  )}
+                >
+                  {tab}
+                  {activeTab === tab && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-violet-600 rounded-t-full" />
+                  )}
+                </button>
+              ))}
+            </nav>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-zinc-400 bg-white/5 px-6 py-2 rounded-2xl border border-white/5 backdrop-blur-md">
-            {['dashboard', 'calendar', 'settings'].map((tab) => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={cn(
-                  "capitalize transition-colors hover:text-white",
-                  activeTab === tab ? "text-white font-bold" : ""
-                )}
-              >
-                {tab}
-              </button>
-            ))}
-          </nav>
-
-          <div className="flex items-center justify-between w-full sm:w-auto space-x-6">
-            <div className="flex flex-col items-center sm:items-end flex-1 sm:flex-none">
-              <p className="text-[9px] md:text-[10px] font-black text-pink-500 uppercase tracking-[0.2em] leading-none mb-1">
+          <div className="flex items-center space-x-8">
+            <div className="flex flex-col items-end">
+              <p className="text-[9px] font-black text-violet-600 uppercase tracking-widest leading-none mb-1">
                 Philippine Standard Time
               </p>
-              <p className="text-sm md:text-lg font-mono font-bold text-white tabular-nums leading-none">
-                {pstTime || '--:--:-- --'}
+              <p className="text-sm font-mono font-bold text-zinc-900 tabular-nums">
+                {pstTime || '00:00:00 PM'}
               </p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-xs text-zinc-500 text-right hidden lg:block">
-                <p className="font-medium text-zinc-300">{session.user.email}</p>
-                <button 
-                  onClick={handleSignOut}
-                  className="hover:text-pink-500 transition-colors"
-                >
-                  Sign Out
-                </button>
-              </div>
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-zinc-700 bg-zinc-800 flex items-center justify-center text-zinc-400 font-bold overflow-hidden shadow-lg">
-                {session.user.email?.[0].toUpperCase()}
+
+            <div className="flex items-center space-x-6 border-l border-zinc-200 pl-8">
+              <button className="text-zinc-400 hover:text-zinc-900 transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+              </button>
+
+              <div className="flex items-center space-x-3 group cursor-pointer border-l border-zinc-200 pl-6 py-2">
+                <div className="flex flex-col items-end">
+                  <p className="text-xs font-bold text-zinc-900">{session.user.email}</p>
+                  <button onClick={handleSignOut} className="text-[10px] font-black text-zinc-400 hover:text-red-500 uppercase tracking-widest">Sign Out</button>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white font-black shadow-lg">
+                  {session.user.email?.[0].toUpperCase()}
+                </div>
               </div>
             </div>
           </div>
         </header>
+      </div>
+
+      <div className="z-10 max-w-7xl w-full flex flex-col space-y-8 md:space-y-12 p-6 md:p-10">
 
         <section className="w-full">
           {activeTab === 'dashboard' ? (
@@ -169,7 +157,7 @@ export default function Home() {
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="md:hidden fixed bottom-6 left-6 right-6 z-50">
-        <nav className="flex items-center justify-around p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+        <nav className="flex items-center justify-around p-4 bg-white/80 backdrop-blur-2xl border border-zinc-200 rounded-[2rem] shadow-xl">
           {[
             { id: 'dashboard', label: 'Home' },
             { id: 'calendar', label: 'Calendar' },
@@ -180,12 +168,12 @@ export default function Home() {
               onClick={() => setActiveTab(item.id)}
               className={cn(
                 "flex flex-col items-center space-y-1 transition-all",
-                activeTab === item.id ? "text-pink-500 scale-110" : "text-zinc-500"
+                activeTab === item.id ? "text-violet-600 scale-110" : "text-zinc-400"
               )}
             >
               <div className={cn(
                 "w-1 h-1 rounded-full mb-1 transition-all",
-                activeTab === item.id ? "bg-pink-500" : "bg-transparent"
+                activeTab === item.id ? "bg-violet-600" : "bg-transparent"
               )} />
               <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
             </button>
