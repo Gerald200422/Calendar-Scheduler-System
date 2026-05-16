@@ -162,7 +162,6 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-full bg-violet-600 dark:bg-violet-500 flex items-center justify-center text-white font-black shadow-lg">
                   {session.user.email?.[0].toUpperCase()}
                 </div>
-              </div>
             </div>
           </div>
         </header>
