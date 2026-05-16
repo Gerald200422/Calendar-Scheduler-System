@@ -82,6 +82,11 @@ export default function Calendar({ userId }: CalendarProps) {
     setIsModalOpen(true)
   }
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedEvent(null)
+  }
+
   const handleSaveEvent = async (eventData: any) => {
     const payload = {
       user_id: userId,
@@ -335,7 +340,7 @@ export default function Calendar({ userId }: CalendarProps) {
 
       <EventModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={handleCloseModal} 
         onSave={handleSaveEvent}
         onDelete={handleDeleteEvent}
         selectedDate={selectedDate}
