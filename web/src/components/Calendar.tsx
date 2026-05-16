@@ -167,7 +167,6 @@ export default function Calendar({ userId }: CalendarProps) {
   }
 
   return (
-  return (
     <div className="w-full max-w-5xl mx-auto p-4 md:p-8 bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-zinc-200 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.05)] text-zinc-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 gap-6">
